@@ -32,9 +32,11 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               children: [
                 _appBar(context),
                 kGap12,
-                CustomTabBar(
-                  tabs: const ["LEVEL 1", "LEVEL 2", "LEVEL 3"],
-                  children: [_level1(), _level2(), _level3()],
+                Expanded(
+                  child: CustomTabBar(
+                    tabs: const ["LEVEL 1", "LEVEL 2", "LEVEL 3"],
+                    children: [_level1(), _level2(), _level3()],
+                  ),
                 ),
               ],
             ),
@@ -51,7 +53,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
         Container(
           margin: EdgeInsets.only(top: 20),
           padding: EdgeInsets.fromLTRB(17, 15, 17, 0),
-          height: MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * 0.6,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(39),
             color: Color(0xffFFC578),
@@ -75,6 +77,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       ],
     );
   }
+
   Widget _level2() {
     return Column(
       children: [
@@ -82,7 +85,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
         Container(
           margin: EdgeInsets.only(top: 20),
           padding: EdgeInsets.fromLTRB(17, 15, 17, 0),
-          height: MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * 0.6,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(39),
             color: Color(0xffFFC578),
@@ -114,7 +117,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
         Container(
           margin: EdgeInsets.only(top: 20),
           padding: EdgeInsets.fromLTRB(17, 15, 17, 0),
-          height: MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * 0.6,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(39),
             color: Color(0xffFFC578),
@@ -138,7 +141,6 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       ],
     );
   }
-
 
   Container _nameStudent({
     required String no,

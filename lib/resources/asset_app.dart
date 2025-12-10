@@ -13,6 +13,10 @@ class AppImages {
   static const String imgLevel1 = '$imagePath/img-lvl1.png';
   static const String imgLevel2 = '$imagePath/img-lvl2.png';
   static const String imgLevel3 = '$imagePath/img-lvl3.png';
+  static const String imgbgsoalLevel1 = '$imagePath/img-bg-soal-lvl1.png';
+  static const String imgbgsoalLevel2 = '$imagePath/img-bg-soal-lvl2.png';
+  static const String imgbgsoalLevel3 = '$imagePath/img-bg-soal-lvl3.png';
+  static const String imgLevelComplate = '$imagePath/img-level-complate.png';
 }
 
 class AppIcons {

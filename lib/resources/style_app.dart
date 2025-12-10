@@ -20,6 +20,13 @@ class AppStyles {
     color: Colors.black,
   );
 
+  static const TextStyle lilitaOne40 = TextStyle(
+    fontFamily: 'LilitaOne',
+    fontWeight: WeightsApp.regular,
+    fontSize: 40,
+    color: Colors.black,
+  );
+
   static const TextStyle lilitaOne42 = TextStyle(
     fontFamily: 'LilitaOne',
     fontWeight: WeightsApp.regular,
@@ -156,6 +163,13 @@ class AppStyles {
     fontFamily: 'Montserrat',
     fontWeight: WeightsApp.bold,
     fontSize: 32,
+    color: Colors.black,
+  );
+
+  static const TextStyle montserrat64Bold = TextStyle(
+    fontFamily: 'Montserrat',
+    fontWeight: WeightsApp.bold,
+    fontSize: 64,
     color: Colors.black,
   );
 }
