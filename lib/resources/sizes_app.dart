@@ -1,5 +1,3 @@
-import 'package:gap/gap.dart';
-
 import '../commons.dart';
 
 const kEmptyWidget = SizedBox.shrink();
@@ -31,10 +29,15 @@ const kGap24 = Gap(24);
 const kGap25 = Gap(25);
 const kGap26 = Gap(26);
 const kGap30 = Gap(30);
+const kGap34 = Gap(34);
 const kGap35 = Gap(35);
 const kGap40 = Gap(40);
+const kGap45 = Gap(45);
 const kGap50 = Gap(50);
 const kGap60 = Gap(60);
+const kGap70 = Gap(70);
+const kGap80 = Gap(80);
+const kGap93 = Gap(93);
 const kGap100 = Gap(100);
 
 // Border Radius
@@ -45,6 +48,8 @@ final kRadius8 = BorderRadius.circular(8);
 final kRadius10 = BorderRadius.circular(10);
 final kRadius12 = BorderRadius.circular(12);
 final kRadius16 = BorderRadius.circular(16);
+final kRadius20 = BorderRadius.circular(20);
+final kRadius42 = BorderRadius.circular(42);
 
 // padding all
 const kPadd0 = EdgeInsets.zero;

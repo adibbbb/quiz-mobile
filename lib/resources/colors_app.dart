@@ -8,6 +8,7 @@ abstract class AppColors {
   static const Color mediumBlue = Color(0xff4988C8);
   static const Color blueDongker = Color(0xff163679);
   static const Color orange = Color(0xffEF8D23);
+  static const Color orangeMuda = Color(0xffF4A261);
   static const Color green = Color(0xff8BC34A);
- 
+  static const Color greenLumut = Color(0xff2A9D8F);
 }

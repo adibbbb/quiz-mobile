@@ -13,6 +13,13 @@ class AppStyles {
   // ----------------------------------------------
   // LilitaOne Section
   // ----------------------------------------------
+  static const TextStyle lilitaOne24 = TextStyle(
+    fontFamily: 'LilitaOne',
+    fontWeight: WeightsApp.regular,
+    fontSize: 24,
+    color: Colors.black,
+  );
+
   static const TextStyle lilitaOne42 = TextStyle(
     fontFamily: 'LilitaOne',
     fontWeight: WeightsApp.regular,
@@ -34,6 +41,13 @@ class AppStyles {
     color: Colors.black,
   );
 
+  static const TextStyle lilitaOne33 = TextStyle(
+    fontFamily: 'LilitaOne',
+    fontWeight: WeightsApp.regular,
+    fontSize: 33,
+    color: Colors.black,
+  );
+
   static const TextStyle lilitaOne96 = TextStyle(
     fontFamily: 'LilitaOne',
     fontWeight: WeightsApp.regular,
@@ -44,10 +58,38 @@ class AppStyles {
   // ----------------------------------------------
   // Poppins Section
   // ----------------------------------------------
+  static const TextStyle poppins12Medium = TextStyle(
+    fontFamily: 'Poppins',
+    fontWeight: WeightsApp.medium,
+    fontSize: 12,
+    color: Colors.black,
+  );
+
+  static const TextStyle poppins24Medium = TextStyle(
+    fontFamily: 'Poppins',
+    fontWeight: WeightsApp.medium,
+    fontSize: 24,
+    color: Colors.black,
+  );
+
+  static const TextStyle poppins12Bold = TextStyle(
+    fontFamily: 'Poppins',
+    fontWeight: WeightsApp.bold,
+    fontSize: 12,
+    color: Colors.black,
+  );
+
   static const TextStyle poppins24Bold = TextStyle(
     fontFamily: 'Poppins',
     fontWeight: WeightsApp.bold,
     fontSize: 24,
+    color: Colors.black,
+  );
+
+  static const TextStyle poppins12ExtraBold = TextStyle(
+    fontFamily: 'Poppins',
+    fontWeight: WeightsApp.extraBold,
+    fontSize: 12,
     color: Colors.black,
   );
 
@@ -100,6 +142,13 @@ class AppStyles {
     fontFamily: 'Montserrat',
     fontWeight: WeightsApp.extraBold,
     fontSize: 24,
+    color: Colors.black,
+  );
+
+  static const TextStyle montserrat16Bold = TextStyle(
+    fontFamily: 'Montserrat',
+    fontWeight: WeightsApp.bold,
+    fontSize: 16,
     color: Colors.black,
   );
 
