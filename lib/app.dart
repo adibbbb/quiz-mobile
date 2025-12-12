@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 
 import 'commons.dart';
 import 'pages/login_page/default_login_view.dart';
+import 'provider/auth_provider.dart';
 import 'provider/pertanyaan_guru_provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TeacherQuestionProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MaterialApp(title: 'QuizGo', home: const DefaultLoginView()),
     );

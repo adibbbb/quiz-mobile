@@ -12,7 +12,6 @@ class SiswaLevel1View extends StatefulWidget {
 }
 
 class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
-  // state untuk menyimpan jawaban yang dipilih
   String? selectedAnswer;
 
   @override
@@ -58,7 +57,6 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
               ),
               child: Column(
                 children: [
-                  // Bagian atas dengan padding untuk teks dan jawaban
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -84,7 +82,10 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
                           text: 'Next',
                           backgroundColor: AppColors.blue,
                           onPressed: () {
-                            Navigator.push(context, SlidePageRoute(page: SiswaLevelComplateView()));
+                            Navigator.push(
+                              context,
+                              SlidePageRoute(page: SiswaLevelComplateView()),
+                            );
                           },
                         ),
                       ],
@@ -126,6 +127,7 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
             BoxShadow(
               blurRadius: 4,
               offset: Offset(0, 4),
+              // ignore: deprecated_member_use
               color: Color(0xff000000).withOpacity(0.1),
             ),
           ],

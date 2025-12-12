@@ -17,6 +17,8 @@ class AppImages {
   static const String imgbgsoalLevel2 = '$imagePath/img-bg-soal-lvl2.png';
   static const String imgbgsoalLevel3 = '$imagePath/img-bg-soal-lvl3.png';
   static const String imgLevelComplate = '$imagePath/img-level-complate.png';
+  static const String imgBintang3 = '$imagePath/img-bintang3.png';
+  static const String imgBintang5 = '$imagePath/img-bintang5.png';
 }
 
 class AppIcons {

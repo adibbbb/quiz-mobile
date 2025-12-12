@@ -6,12 +6,16 @@ class CustomTextFormField extends StatelessWidget {
   final String label;
   final String hintText;
   final TextEditingController? controller;
+  final String? Function(String? value)? validator;
+  final void Function(String? value)? onSaved;
 
   const CustomTextFormField({
     super.key,
     required this.label,
     required this.hintText,
     this.controller,
+    this.validator,
+    this.onSaved,
   });
 
   @override
@@ -53,6 +57,8 @@ class CustomTextFormField extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   controller: controller,
+                  validator: validator,
+                  onSaved: onSaved,
                   decoration: InputDecoration(
                     hintText: hintText,
                     hintStyle: AppStyles.poppins24Medium.copyWith(
@@ -75,17 +81,20 @@ class CustomTextFormField extends StatelessWidget {
   }
 }
 
-
 class CustomPasswordTextFormField extends StatefulWidget {
   final String label;
   final String hintText;
   final TextEditingController? controller;
+  final String? Function(String? value)? validator;
+  final void Function(String? value)? onSaved;
 
   const CustomPasswordTextFormField({
     super.key,
     required this.label,
     required this.hintText,
     this.controller,
+    this.validator,
+    this.onSaved,
   });
 
   @override
@@ -141,13 +150,14 @@ class _CustomPasswordTextFormFieldState
                   onDoubleTap: _toggleVisibility,
                   child: TextFormField(
                     controller: widget.controller,
+                    validator: widget.validator,
+                    onSaved: widget.onSaved,
                     obscureText: _obscureText,
+
                     enableInteractiveSelection: false,
                     decoration: InputDecoration(
                       hintText: widget.hintText,
-                      hintStyle: const TextStyle(
-                        color: Color(0xFFBDBDBD),
-                      ),
+                      hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
                       border: InputBorder.none,
                       isDense: true,
                     ),

@@ -41,6 +41,11 @@ dependencies:
   auto_size_text: ^3.0.0
   carousel_slider: ^5.1.1
   provider: ^6.1.5+1
+  firebase_core: ^4.2.1
+  cloud_firestore: ^6.1.0
+  firebase_auth: ^6.1.2
+  dio: ^5.9.0
+  equatable: ^2.0.7
 
 dev_dependencies:
   flutter_test:

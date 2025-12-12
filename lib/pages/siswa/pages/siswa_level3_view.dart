@@ -122,6 +122,7 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
             BoxShadow(
               blurRadius: 4,
               offset: Offset(0, 4),
+              // ignore: deprecated_member_use
               color: Color(0xff000000).withOpacity(0.1),
             ),
           ],

@@ -1,6 +1,7 @@
 import 'dart:ui';
+import 'package:quiz/widgets/custom_button.dart';
+
 import '../../../commons.dart';
-import 'package:flutter/material.dart';
 
 class SiswaLevelComplateView extends StatefulWidget {
   const SiswaLevelComplateView({super.key});
@@ -33,15 +34,17 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              // ignore: deprecated_member_use
               child: Container(color: Colors.black.withOpacity(0)),
             ),
           ),
 
           Center(
             child: Container(
-              width: screenWidth * 0.9,
-              height: screenHeight * 0.9,
+              width: screenWidth * 0.85,
+              height: screenHeight * 0.85,
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: Colors.white.withOpacity(0.85), // semi-transparan
                 borderRadius: BorderRadius.circular(73),
               ),
@@ -50,7 +53,56 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                 child: Column(
                   children: [
                     Image.asset(AppImages.imgLevelComplate, height: 150),
-                    Text('SCORE', style: AppStyles.montserrat64Bold.copyWith(color: AppColors.orange),)
+                    kGap50,
+                    Image.asset(AppImages.imgBintang3, height: 130),
+                    kGap50,
+                    Text(
+                      'SCORE',
+                      style: AppStyles.montserrat64Bold.copyWith(
+                        color: AppColors.orange,
+                      ),
+                    ),
+                    kGap25,
+
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: AppColors.orange,
+                      ),
+                      child: Text(
+                        '90',
+                        style: AppStyles.montserrat64Bold.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+
+                    Spacer(),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      spacing: 20,
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            onPressed: () {},
+                            text: 'BACK',
+                            backgroundColor: AppColors.orange,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomButton(
+                            onPressed: () {},
+                            text: 'NEXT',
+                            backgroundColor: AppColors.orange,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
