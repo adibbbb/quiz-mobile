@@ -42,65 +42,77 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
             ),
           ),
 
-          // White Container dari bawah
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              height: screenHeight * 0.75,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '"Ani pergi ke sekolah dengan berjalan kaki setiap pagi." Pertanyaan: Siapa yang pergi ke sekolah?',
-                          style: AppStyles.poppins24Medium,
-                        ),
-                        kGap43,
-                        _buildAnswerOption('A', 'Aran'),
-                        kGap16,
-                        _buildAnswerOption('B', 'Ani'),
-                        kGap16,
-                        _buildAnswerOption('C', 'Budi'),
-                        kGap16,
-                        _buildAnswerOption('D', 'Sebew'),
-                        kGap23,
-                        CustomButton(
-                          text: 'Next',
-                          backgroundColor: AppColors.blue,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              SlidePageRoute(page: SiswaLevelComplateView()),
-                            );
-                          },
-                        ),
-                      ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final bool isTablet = constraints.maxWidth >= 600;
+                final double sizeQuestionText = isTablet ? 24 : 16;
+                final double sizeButtonNext = isTablet ? 70 : 55;
+
+                return Container(
+                  height: screenHeight * 0.75,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
                     ),
                   ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 32,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '"Ani pergi ke sekolah dengan berjalan kaki setiap pagi." Pertanyaan: Siapa yang pergi ke sekolah?',
+                              style: AppStyles.poppins24Medium.copyWith(
+                                fontSize: sizeQuestionText,
+                              ),
+                            ),
+                            kGap43,
+                            _buildAnswerOption('A', 'Aran'),
+                            kGap16,
+                            _buildAnswerOption('B', 'Ani'),
+                            kGap16,
+                            _buildAnswerOption('C', 'Budi'),
+                            kGap16,
+                            _buildAnswerOption('D', 'Sebew'),
+                            kGap23,
+                            CustomButton(
+                              text: 'Next',
+                              height: sizeButtonNext,
+                              backgroundColor: AppColors.blue,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                    page: SiswaLevelComplateView(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
 
-                  Spacer(),
+                      Spacer(),
 
-                  Image.asset(
-                    AppImages.imgbgsoalLevel1,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                      Image.asset(
+                        AppImages.imgbgsoalLevel1,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -108,7 +120,6 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
     );
   }
 
-  // Widget opsi jawaban dengan radio
   Widget _buildAnswerOption(String label, String text) {
     bool isSelected = selectedAnswer == label;
 
@@ -118,52 +129,68 @@ class _SiswaLevel1ViewState extends State<SiswaLevel1View> {
           selectedAnswer = label;
         });
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.blue : Colors.white,
-          borderRadius: kRadius42,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              offset: Offset(0, 4),
-              // ignore: deprecated_member_use
-              color: Color(0xff000000).withOpacity(0.1),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: isSelected ? Colors.white : AppColors.blue,
-              child: Text(
-                label,
-                style: AppStyles.poppins24Medium.copyWith(
-                  color: isSelected ? AppColors.blue : Colors.white,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isTablet = constraints.maxWidth >= 600;
+          final double sizeRadioButtonText = isTablet ? 24 : 16;
+          final EdgeInsetsDirectional paddingButton =
+              isTablet
+                  ? EdgeInsetsDirectional.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  )
+                  : EdgeInsetsDirectional.symmetric(horizontal: 4, vertical: 3);
+
+          return Container(
+            padding: paddingButton,
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.blue : Colors.white,
+              borderRadius: kRadius42,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 4,
+                  offset: Offset(0, 4),
+                  // ignore: deprecated_member_use
+                  color: Color(0xff000000).withOpacity(0.1),
                 ),
-              ),
+              ],
             ),
-            kGap16,
-            Expanded(
-              child: Text(
-                text,
-                style: AppStyles.poppins24Medium.copyWith(
-                  color: isSelected ? Colors.white : AppColors.blue,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: isSelected ? Colors.white : AppColors.blue,
+                  child: Text(
+                    label,
+                    style: AppStyles.poppins24Medium.copyWith(
+                      fontSize: sizeRadioButtonText,
+                      color: isSelected ? AppColors.blue : Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+                kGap16,
+                Expanded(
+                  child: Text(
+                    text,
+                    style: AppStyles.poppins24Medium.copyWith(
+                      fontSize: sizeRadioButtonText,
+                      color: isSelected ? Colors.white : AppColors.blue,
+                    ),
+                  ),
+                ),
+                Radio<String>(
+                  activeColor: Colors.white,
+                  value: label,
+                  groupValue: selectedAnswer,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedAnswer = value;
+                    });
+                  },
+                ),
+              ],
             ),
-            Radio<String>(
-              activeColor: Colors.white,
-              value: label,
-              groupValue: selectedAnswer,
-              onChanged: (value) {
-                setState(() {
-                  selectedAnswer = value;
-                });
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

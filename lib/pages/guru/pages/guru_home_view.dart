@@ -21,7 +21,6 @@ class GuruHomeView extends StatefulWidget {
 class _GuruHomeViewState extends State<GuruHomeView> {
   final CarouselSliderController _carouselController =
       CarouselSliderController();
-  // context.read<AuthProvider>().logout();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +58,7 @@ class _GuruHomeViewState extends State<GuruHomeView> {
             left: 16,
             child: GestureDetector(
               onTap: () {
-                context.read<AuthProvider>().logout();
+                context.read<AuthProvider>().logoutGuru();
               },
               child: Icon(
                 Icons.arrow_back_ios_rounded,

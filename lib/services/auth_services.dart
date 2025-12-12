@@ -11,8 +11,7 @@ class AuthServices {
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-
-  ResultFuture<Map<String, dynamic>> signInWithId(
+  ResultFuture<Map<String, dynamic>> signInGuru(
     String id,
     String password,
   ) async {
@@ -38,5 +37,13 @@ class AuthServices {
     } catch (e) {
       return Left(ErrorHandler.map(e));
     }
+  }
+
+   Future<void> addSiswa(String nama, String kelas) async {
+    await _db.collection('siswa').add({
+      'nama': nama,
+      'kelas': kelas,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 }
