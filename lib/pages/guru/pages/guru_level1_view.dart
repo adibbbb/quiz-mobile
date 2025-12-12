@@ -4,7 +4,6 @@ import '../../../provider/pertanyaan_guru_provider.dart';
 import '../../../widgets/custom_button.dart';
 import '../widget/custom_form_jawaban.dart';
 
-
 class GuruLevel1View extends StatelessWidget {
   const GuruLevel1View({super.key});
 
@@ -38,22 +37,26 @@ class GuruLevel1View extends StatelessWidget {
                 children: [
                   Text(
                     'LEVEL 1',
-                    style: AppStyles.lilitaOne42.copyWith(color: AppColors.blue),
+                    style: AppStyles.lilitaOne42.copyWith(
+                      color: AppColors.blue,
+                    ),
                   ),
                   const Divider(),
                   kGap20,
-    
+
                   // Form soal
                   Expanded(child: TeacherQuestionForm()),
-    
+
                   kGap20,
-    
+
                   // Tombol Add (+)
                   InkWell(
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
-                      Provider.of<TeacherQuestionProvider>(context, listen: false)
-                          .addQuestion();
+                      Provider.of<TeacherQuestionProvider>(
+                        context,
+                        listen: false,
+                      ).addQuestion();
                     },
                     child: Container(
                       width: double.infinity,
@@ -78,9 +81,9 @@ class GuruLevel1View extends StatelessWidget {
                       ),
                     ),
                   ),
-    
+
                   const SizedBox(height: 20),
-    
+
                   // Tombol Cancel & Done
                   Row(
                     children: [
@@ -96,9 +99,7 @@ class GuruLevel1View extends StatelessWidget {
                       const SizedBox(width: 20),
                       Expanded(
                         child: CustomButton(
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                           text: 'Done',
                           borderRadius: kRadius20,
                           backgroundColor: AppColors.green,

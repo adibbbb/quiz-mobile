@@ -11,7 +11,7 @@ class AuthServices {
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  /// LOGIN GURU MENGGUNAKAN ID + PASSWORD (Firestore)
+
   ResultFuture<Map<String, dynamic>> signInWithId(
     String id,
     String password,

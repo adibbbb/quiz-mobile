@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:quiz/app/navigator_keys.dart';
 
 import 'commons.dart';
 import 'pages/login_page/default_login_view.dart';
@@ -15,7 +16,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TeacherQuestionProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MaterialApp(title: 'QuizGo', home: const DefaultLoginView()),
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'QuizGo', home: const DefaultLoginView()),
     );
   }
 }

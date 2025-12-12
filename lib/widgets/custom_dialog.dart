@@ -5,6 +5,7 @@ void showSuccessDialog(BuildContext context, String message) {
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: AppColors.white,
         title: const Text("Berhasil"),
         content: Text(message),
         actions: [
@@ -23,6 +24,7 @@ void showErrorDialog(BuildContext context, String message) {
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: AppColors.white,
         title: const Text("Error"),
         content: Text(message),
         actions: [

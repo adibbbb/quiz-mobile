@@ -4,6 +4,7 @@ import '../app/finite_state.dart';
 import '../app/navigator_keys.dart';
 import '../commons.dart';
 import '../pages/guru/pages/guru_home_view.dart';
+import '../pages/login_page/login_view.dart';
 import '../services/auth_services.dart';
 import '../widgets/custom_dialog.dart';
 
@@ -52,12 +53,22 @@ class AuthProvider extends ChangeNotifier {
         var context = navigatorKey.currentState?.context;
         if (context != null) {
           showSuccessDialog(context, "Login berhasil!");
-          // NAVIGASI SETELAH DIALOG DITUTUP
           Future.delayed(const Duration(milliseconds: 500)).then((_) {
             context.slideRemoveUntil(GuruHomeView());
           });
         }
       },
     );
+  }
+
+  void logout() {
+    loggedGuru = null; 
+    state = MyState.initial;
+    notifyListeners();
+
+    var context = navigatorKey.currentState?.context;
+    if (context != null) {
+      context.slideRemoveUntil(LoginView(type: LoginViewType.guru));
+    }
   }
 }

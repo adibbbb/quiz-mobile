@@ -10,6 +10,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 
 import '../siswa/pages/siswa_home_view.dart';
+import 'default_login_view.dart';
 
 enum LoginViewType { siswa, guru }
 
@@ -154,6 +155,19 @@ class _LoginViewState extends State<LoginView> {
                   return ListView(
                     padding: const EdgeInsets.all(24),
                     children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.slideRemoveUntil(DefaultLoginView());
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: AppColors.white,
+                            size: 25,
+                          ),
+                        ),
+                      ),
                       kGap30,
                       AutoSizeText(
                         'HELLO TEACHER',
