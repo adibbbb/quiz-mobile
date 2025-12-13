@@ -1,15 +1,22 @@
-import 'package:quiz/widgets/custom_button.dart';
-
+import 'package:provider/provider.dart';
 import '../../../commons.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../provider/jawaban_siswa_provider.dart';
+import '../../../provider/soal_guru_provider.dart';
+import '../widgets/level_colors.dart';
+import 'siswa_level_complate_view.dart';
+import 'siswa_level_view.dart';
 
 class SiswaPreviewAnswerView extends StatefulWidget {
   final int levelSiswa;
+  final int questionIndex;
   final String bgImage;
 
   const SiswaPreviewAnswerView({
     super.key,
     required this.levelSiswa,
     required this.bgImage,
+    required this.questionIndex,
   });
 
   @override
@@ -17,20 +24,27 @@ class SiswaPreviewAnswerView extends StatefulWidget {
 }
 
 class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
-  String? selectedAnswer;
-  final String correctAnswer = 'B';
-  final String userAnswer = 'D'; // misal dipilih user
-
   @override
   Widget build(BuildContext context) {
+    final studentProvider = Provider.of<StudentAnswerProvider>(context);
+    final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
+
+    final question =
+        teacherProvider.getQuestions(widget.levelSiswa)[widget.questionIndex];
+
+    final userAnswer = studentProvider.getAnswer(
+      level: widget.levelSiswa,
+      questionIndex: widget.questionIndex,
+    );
+
+    final correctAnswer = ['A', 'B', 'C', 'D'][question.selectedAnswerIndex];
+
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background
           _backgroundLevel(),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: LayoutBuilder(
@@ -60,41 +74,23 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '"Ani pergi ke sekolah dengan berjalan kaki setiap pagi." Pertanyaan: Siapa yang pergi ke sekolah?',
+                              question.question,
                               style: AppStyles.poppins24Medium.copyWith(
                                 fontSize: sizeQuestionText,
                               ),
                             ),
                             kGap43,
-                            _buildAnswerOption(
-                              'A',
-                              'ASD',
-                              selectedAnswer: userAnswer,
-                              correctAnswer: correctAnswer,
-                              isPreview: true,
-                            ),
-                            _buildAnswerOption(
-                              'B',
-                              'Ani',
-                              selectedAnswer: userAnswer,
-                              correctAnswer: correctAnswer,
-                              isPreview: true,
-                            ),
-                            _buildAnswerOption(
-                              'C',
-                              'Budi',
-                              selectedAnswer: userAnswer,
-                              correctAnswer: correctAnswer,
-                              isPreview: true,
-                            ),
-                            _buildAnswerOption(
-                              'D',
-                              'Sebew',
-                              selectedAnswer: userAnswer,
-                              correctAnswer: correctAnswer,
-                              isPreview: true,
-                            ),
-
+                            ...List.generate(4, (i) {
+                              final label = ['A', 'B', 'C', 'D'][i];
+                              final answerText = question.answers[i];
+                              return _buildAnswerOption(
+                                label,
+                                answerText,
+                                selectedAnswer: userAnswer,
+                                correctAnswer: correctAnswer,
+                                isPreview: true,
+                              );
+                            }),
                             kGap23,
                             Row(
                               children: [
@@ -111,8 +107,49 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                                   child: CustomButton(
                                     text: 'Next',
                                     height: sizeButtonNext,
-                                    backgroundColor: AppColors.green,
-                                    onPressed: () {},
+                                    backgroundColor: LevelColors.getButtonNext(
+                                      widget.levelSiswa,
+                                    ),
+                                    onPressed: () {
+                                      final studentProvider =
+                                          Provider.of<StudentAnswerProvider>(
+                                            context,
+                                            listen: false,
+                                          );
+                                      studentProvider.currentQuestionIndex++;
+
+                                      final totalQuestions =
+                                          teacherProvider
+                                              .getQuestions(widget.levelSiswa)
+                                              .length;
+
+                                      if (studentProvider
+                                              .currentQuestionIndex >=
+                                          totalQuestions) {
+                                        // Semua soal selesai → LevelComplete
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => SiswaLevelComplateView(
+                                                  levelsiswa: widget.levelSiswa,
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        // Lanjut ke soal berikutnya
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => SiswaLevelView(
+                                                  levelSiswa: widget.levelSiswa,
+                                                  bgImage: widget.bgImage,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                 ),
                               ],
@@ -120,11 +157,9 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                           ],
                         ),
                       ),
-
                       Spacer(),
-
                       Image.asset(
-                        AppImages.imgbgsoalLevel1,
+                        LevelColors.getImgBgLevel(widget.levelSiswa.toString()),
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -146,30 +181,31 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
     String? correctAnswer,
     bool isPreview = false,
   }) {
-    Color containerColor = Colors.white;
-    Color circleBgColor = AppColors.blue;
+    // Ambil warna default berdasarkan level
+    Color containerColor = LevelColors.getBackground(widget.levelSiswa);
+    Color circleBgColor = LevelColors.getCircleAvatar(widget.levelSiswa);
     Color circleTextColor = Colors.white;
     Color textColor = AppColors.black;
 
     if (isPreview && selectedAnswer != null && correctAnswer != null) {
       if (label == selectedAnswer && label == correctAnswer) {
-        // user jawab benar
-        containerColor = AppColors.blue;
+        // User jawab benar
+        containerColor = LevelColors.getCircleAvatar(widget.levelSiswa);
         circleBgColor = Colors.white;
-        circleTextColor = AppColors.blue;
+        circleTextColor = LevelColors.getCircleAvatar(widget.levelSiswa);
         textColor = Colors.white;
       } else if (label == selectedAnswer && label != correctAnswer) {
-        // user jawab salah
+        // User jawab salah
         containerColor = AppColors.red;
         circleBgColor = Colors.white;
         circleTextColor = AppColors.red;
         textColor = Colors.white;
       } else if (label == correctAnswer) {
-        // jawaban benar tapi tidak dipilih user
+        // Jawaban benar tapi tidak dipilih user
         containerColor = AppColors.green;
         circleBgColor = Colors.white;
         circleTextColor = AppColors.green;
-        textColor = AppColors.white;
+        textColor = Colors.white;
       }
     }
 
@@ -218,7 +254,6 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                   ),
                 ),
               ),
-              // RadioButton user
               if (!isPreview)
                 Radio<String>(
                   value: label,
@@ -229,7 +264,6 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                     });
                   },
                 ),
-              // Indikator jawaban benar di preview
               if (isPreview)
                 Container(
                   width: 20,

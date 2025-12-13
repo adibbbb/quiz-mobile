@@ -4,6 +4,8 @@ import 'package:quiz/app/navigator_keys.dart';
 import 'commons.dart';
 import 'pages/login_page/default_login_view.dart';
 import 'provider/auth_provider.dart';
+import 'provider/jawaban_siswa_provider.dart';
+import 'provider/leaderboard_provider.dart';
 import 'provider/soal_guru_provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -14,7 +16,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TeacherQuestionProvider()),
+        ChangeNotifierProvider(create: (_) => StudentAnswerProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

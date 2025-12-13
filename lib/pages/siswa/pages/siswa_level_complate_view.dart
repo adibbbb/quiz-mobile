@@ -1,13 +1,18 @@
 import 'dart:ui';
+
+import 'package:provider/provider.dart';
 import 'package:quiz/app/custom_transition.dart';
 import 'package:quiz/pages/guru/pages/leaderboard_view.dart';
 import 'package:quiz/pages/siswa/pages/siswa_home_view.dart';
 import 'package:quiz/widgets/custom_button.dart';
 
 import '../../../commons.dart';
+import '../../../provider/jawaban_siswa_provider.dart';
+import '../../../provider/soal_guru_provider.dart';
 
 class SiswaLevelComplateView extends StatefulWidget {
-  const SiswaLevelComplateView({super.key});
+  final int levelsiswa;
+  const SiswaLevelComplateView({super.key, required this.levelsiswa});
 
   @override
   State<SiswaLevelComplateView> createState() => _SiswaLevelComplateViewState();
@@ -15,9 +20,26 @@ class SiswaLevelComplateView extends StatefulWidget {
 
 class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
   @override
+  
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Ambil provider
+    final studentProvider = Provider.of<StudentAnswerProvider>(context);
+    final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
+
+    // Ambil data soal & jawaban
+    final level = widget.levelsiswa;
+    final questions = teacherProvider.getQuestions(level);
+    final correctAnswers =
+        questions
+            .map((q) => ['A', 'B', 'C', 'D'][q.selectedAnswerIndex])
+            .toList();
+    final scoreRaw = studentProvider.correctAnswersCount(level, correctAnswers);
+    final total = questions.length;
+
+    final scorePercent = total > 0 ? ((scoreRaw / total) * 100).round() : 0;
 
     return Scaffold(
       body: Stack(
@@ -37,7 +59,6 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              // ignore: deprecated_member_use
               child: Container(color: Colors.black.withOpacity(0)),
             ),
           ),
@@ -47,7 +68,6 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
               width: screenWidth * 0.85,
               height: screenHeight * 0.85,
               decoration: BoxDecoration(
-                // ignore: deprecated_member_use
                 color: Colors.white.withOpacity(0.85),
                 borderRadius: BorderRadius.circular(73),
               ),
@@ -69,7 +89,9 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                         ),
                         kGap50,
                         Image.asset(
-                          AppImages.imgBintang3,
+                          scorePercent >= 80
+                              ? AppImages.imgBintang5
+                              : AppImages.imgBintang3,
                           height: isTablet ? 130 : 120,
                         ),
                         kGap50,
@@ -82,6 +104,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                         ),
                         kGap25,
 
+                        // Tampilkan skor dinamis
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 40,
@@ -92,7 +115,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                             color: AppColors.orange,
                           ),
                           child: Text(
-                            '90',
+                            '$scorePercent',
                             style: AppStyles.montserrat64Bold.copyWith(
                               color: AppColors.white,
                             ),
@@ -102,15 +125,18 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                         Spacer(),
 
                         Row(
+                          spacing: 30,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          spacing: 20,
                           children: [
                             Expanded(
                               child: CustomButton(
                                 text: 'BACK',
                                 backgroundColor: AppColors.orange,
                                 onPressed: () {
-                                  context.slideRemoveUntil(SiswaHomeView());
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    SlidePageRoute(page: SiswaHomeView()),
+                                    (route) => false,
+                                  );
                                 },
                               ),
                             ),
