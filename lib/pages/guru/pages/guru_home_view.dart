@@ -1,13 +1,13 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz/pages/guru/pages/guru_level_view.dart';
+import 'package:quiz/pages/login_page/default_login_view.dart';
+import 'package:quiz/provider/authentication_provider.dart';
 
 import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-
-import '../../../provider/auth_provider.dart';
 import '../../../widgets/custom_level_carousel.dart';
 import '../widget/data_guru.dart';
+import 'guru_level_view.dart';
 
 class GuruHomeView extends StatefulWidget {
   const GuruHomeView({super.key});
@@ -45,21 +45,25 @@ class _GuruHomeViewState extends State<GuruHomeView> {
                 case 1:
                   Navigator.push(
                     context,
-                    SlidePageRoute(page: GuruLevelView(
+                    SlidePageRoute(
+                      page: GuruLevelView(
                         level: 2,
                         bgImage: AppImages.imgBgLevel2,
                         titleColor: AppColors.orange,
-                      ),),
+                      ),
+                    ),
                   );
                   break;
                 case 2:
                   Navigator.push(
                     context,
-                    SlidePageRoute(page: GuruLevelView(
+                    SlidePageRoute(
+                      page: GuruLevelView(
                         level: 3,
                         bgImage: AppImages.imgBgLevel3,
                         titleColor: AppColors.blueDongker,
-                      ),),
+                      ),
+                    ),
                   );
                   break;
               }
@@ -70,7 +74,13 @@ class _GuruHomeViewState extends State<GuruHomeView> {
             left: 16,
             child: GestureDetector(
               onTap: () {
-                context.read<AuthProvider>().logoutGuru();
+                context.read<AuthenticationProvider>().logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  ScalePageRoute(page: DefaultLoginView()),
+                  (route) => route.isFirst,
+                );
+                // context.read<AuthProvider>().logoutGuru();
               },
               child: Icon(
                 Icons.arrow_back_ios_rounded,

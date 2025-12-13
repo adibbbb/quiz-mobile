@@ -1,11 +1,6 @@
-import 'package:provider/provider.dart';
 import '../../../commons.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../provider/jawaban_siswa_provider.dart';
-import '../../../provider/soal_guru_provider.dart';
 import '../widgets/level_colors.dart';
-import 'siswa_level_complate_view.dart';
-import 'siswa_level_view.dart';
 
 class SiswaPreviewAnswerView extends StatefulWidget {
   final int levelSiswa;
@@ -26,18 +21,18 @@ class SiswaPreviewAnswerView extends StatefulWidget {
 class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
   @override
   Widget build(BuildContext context) {
-    final studentProvider = Provider.of<StudentAnswerProvider>(context);
-    final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
+    // final studentProvider = Provider.of<StudentAnswerProvider>(context);
+    // final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
 
-    final question =
-        teacherProvider.getQuestions(widget.levelSiswa)[widget.questionIndex];
+    // final question =
+    //     teacherProvider.getQuestions(widget.levelSiswa)[widget.questionIndex];
 
-    final userAnswer = studentProvider.getAnswer(
-      level: widget.levelSiswa,
-      questionIndex: widget.questionIndex,
-    );
+    // final userAnswer = studentProvider.getAnswer(
+    //   level: widget.levelSiswa,
+    //   questionIndex: widget.questionIndex,
+    // );
 
-    final correctAnswer = ['A', 'B', 'C', 'D'][question.selectedAnswerIndex];
+    // final correctAnswer = ['A', 'B', 'C', 'D'][question.selectedAnswerIndex];
 
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -74,30 +69,30 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              question.question,
+                              "question.question",
                               style: AppStyles.poppins24Medium.copyWith(
                                 fontSize: sizeQuestionText,
                               ),
                             ),
                             kGap43,
-                            ...List.generate(4, (i) {
-                              final label = ['A', 'B', 'C', 'D'][i];
-                              final answerText = question.answers[i];
-                              return _buildAnswerOption(
-                                label,
-                                answerText,
-                                selectedAnswer: userAnswer,
-                                correctAnswer: correctAnswer,
-                                isPreview: true,
-                              );
-                            }),
+                            // ...List.generate(4, (i) {
+                            //   final label = ['A', 'B', 'C', 'D'][i];
+                            //   final answerText = question.answers[i];
+                            //   return _buildAnswerOption(
+                            //     label,
+                            //     answerText,
+                            //     selectedAnswer: userAnswer,
+                            //     correctAnswer: correctAnswer,
+                            //     isPreview: true,
+                            //   );
+                            // }),
                             kGap23,
                             Row(
                               children: [
                                 Expanded(
                                   flex: 3,
                                   child: Text(
-                                    'Jawaban bener : $correctAnswer',
+                                    'Jawaban bener : ADSSAD',
                                     style: AppStyles.poppins24Medium.copyWith(
                                       fontSize: isTablet ? 20 : 16,
                                     ),
@@ -111,44 +106,44 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
                                       widget.levelSiswa,
                                     ),
                                     onPressed: () {
-                                      final studentProvider =
-                                          Provider.of<StudentAnswerProvider>(
-                                            context,
-                                            listen: false,
-                                          );
-                                      studentProvider.currentQuestionIndex++;
+                                      //   final studentProvider =
+                                      //       Provider.of<StudentAnswerProvider>(
+                                      //         context,
+                                      //         listen: false,
+                                      //       );
+                                      //   studentProvider.currentQuestionIndex++;
 
-                                      final totalQuestions =
-                                          teacherProvider
-                                              .getQuestions(widget.levelSiswa)
-                                              .length;
+                                      //   final totalQuestions =
+                                      //       teacherProvider
+                                      //           .getQuestions(widget.levelSiswa)
+                                      //           .length;
 
-                                      if (studentProvider
-                                              .currentQuestionIndex >=
-                                          totalQuestions) {
-                                        // Semua soal selesai → LevelComplete
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (_) => SiswaLevelComplateView(
-                                                  levelsiswa: widget.levelSiswa,
-                                                ),
-                                          ),
-                                        );
-                                      } else {
-                                        // Lanjut ke soal berikutnya
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (_) => SiswaLevelView(
-                                                  levelSiswa: widget.levelSiswa,
-                                                  bgImage: widget.bgImage,
-                                                ),
-                                          ),
-                                        );
-                                      }
+                                      //   if (studentProvider
+                                      //           .currentQuestionIndex >=
+                                      //       totalQuestions) {
+                                      //     // Semua soal selesai → LevelComplete
+                                      //     Navigator.pushReplacement(
+                                      //       context,
+                                      //       MaterialPageRoute(
+                                      //         builder:
+                                      //             (_) => SiswaLevelComplateView(
+                                      //               levelsiswa: widget.levelSiswa,
+                                      //             ),
+                                      //       ),
+                                      //     );
+                                      //   } else {
+                                      //     // Lanjut ke soal berikutnya
+                                      //     Navigator.pushReplacement(
+                                      //       context,
+                                      //       MaterialPageRoute(
+                                      //         builder:
+                                      //             (_) => SiswaLevelView(
+                                      //               levelSiswa: widget.levelSiswa,
+                                      //               bgImage: widget.bgImage,
+                                      //             ),
+                                      //       ),
+                                      //     );
+                                      //   }
                                     },
                                   ),
                                 ),

@@ -1,7 +1,6 @@
-import 'package:quiz/app/custom_transition.dart';
-import 'package:quiz/pages/login_page/login_view.dart';
-
+import '../../app/custom_transition.dart';
 import '../../commons.dart';
+import 'login_view.dart';
 
 class DefaultLoginView extends StatefulWidget {
   const DefaultLoginView({super.key});

@@ -1,6 +1,6 @@
 export 'package:flutter/material.dart';
-export 'package:gap/gap.dart';
 export 'package:flutter_svg/svg.dart';
+export 'package:gap/gap.dart';
 
 ///List of all files used as helpers
 // export 'shared/navigator_keys.dart';

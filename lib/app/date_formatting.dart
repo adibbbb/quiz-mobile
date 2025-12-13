@@ -45,7 +45,6 @@ String formatCurrency(num value) {
   return "Rp ${NumberFormat('#,###', 'id_ID').format(value)}";
 }
 
-
 String timeAgo(String isoDateString) {
   final date = DateTime.parse(isoDateString).toLocal();
   final now = DateTime.now();

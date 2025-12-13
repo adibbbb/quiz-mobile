@@ -1,12 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:provider/provider.dart';
 
 import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
-import '../../../provider/jawaban_siswa_provider.dart';
 import '../../../widgets/custom_level_carousel.dart';
 import '../../guru/widget/data_guru.dart';
-
 import 'siswa_level_view.dart';
 
 class SiswaHomeView extends StatefulWidget {
@@ -29,12 +26,6 @@ class _SiswaHomeViewState extends State<SiswaHomeView> {
         isShowButton: false,
         middleBuilder: (level) => Image.asset(level['image']),
         onLevelTap: (level, index) {
-          final studentProvider = Provider.of<StudentAnswerProvider>(
-            context,
-            listen: false,
-          );
-          studentProvider.resetLevel(index + 1);
-
           switch (index) {
             case 0:
               Navigator.push(

@@ -1,11 +1,11 @@
 import 'package:provider/provider.dart';
-import '../../../app/custom_transition.dart';
+import 'package:quiz/app/finite_state.dart';
+import 'package:quiz/provider/authentication_provider.dart';
+import 'package:quiz/provider/quiz_provider.dart';
+
 import '../../../commons.dart';
-import '../../../provider/jawaban_siswa_provider.dart';
-import '../../../provider/soal_guru_provider.dart';
 import '../../../widgets/custom_button.dart';
-import 'siswa_level_complate_view.dart';
-import 'siswa_preview_jawaban_view.dart';
+import '../widgets/answer_options.dart';
 
 class SiswaLevelView extends StatefulWidget {
   final int levelSiswa;
@@ -24,81 +24,49 @@ class SiswaLevelView extends StatefulWidget {
 }
 
 class _SiswaLevelViewState extends State<SiswaLevelView> {
-  late Color backgroundContainerColor;
-  late Color circleAvatarColor;
+  late Color bgCardColor;
+  late Color selectedColor;
   late Color buttonNextColor;
+
+  void _setColorsByLevel() {
+    switch (widget.levelSiswa) {
+      case 1:
+        bgCardColor = Colors.white;
+        selectedColor = AppColors.blue;
+        buttonNextColor = AppColors.blue;
+        break;
+      case 2:
+        bgCardColor = Colors.white;
+        selectedColor = AppColors.orange;
+        buttonNextColor = AppColors.orange;
+        break;
+      case 3:
+        bgCardColor = Colors.white;
+        selectedColor = AppColors.blueDongker;
+        buttonNextColor = AppColors.blueDongker;
+        break;
+      default:
+        bgCardColor = Colors.white;
+        selectedColor = AppColors.blue;
+        buttonNextColor = AppColors.blue;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _setColorsByLevel();
-    // Optional: fetch soal dari provider di sini
-    final teacherProvider = Provider.of<TeacherQuestionProvider>(
-      context,
-      listen: false,
-    );
-    teacherProvider.fetchQuestions(
-      widget.levelSiswa,
-      '12345',
-    ); // ganti dengan guruId yang sesuai
-  }
 
-  void _setColorsByLevel() {
-    switch (widget.levelSiswa) {
-      case 1:
-        backgroundContainerColor = Colors.white;
-        circleAvatarColor = AppColors.blue;
-        buttonNextColor = AppColors.blue;
-        break;
-      case 2:
-        backgroundContainerColor = Colors.white;
-        circleAvatarColor = AppColors.orange;
-        buttonNextColor = AppColors.orange;
-        break;
-      case 3:
-        backgroundContainerColor = Colors.white;
-        circleAvatarColor = AppColors.blueDongker;
-        buttonNextColor = AppColors.blueDongker;
-        break;
-      default:
-        backgroundContainerColor = Colors.white;
-        circleAvatarColor = AppColors.blue;
-        buttonNextColor = AppColors.blue;
-    }
+    // ambil soal
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      var prov = context.read<QuizProvider>();
+      prov.fetchQuestions("quiz_${widget.levelSiswa}");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
-    final studentProvider = Provider.of<StudentAnswerProvider>(context);
-
-    // Ambil soal dari provider
-    final questions = teacherProvider.getQuestions(widget.levelSiswa);
-
-    // Jika soal belum ada, tampilkan loading
-    if (questions.isEmpty) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    // Ambil index soal saat ini
-    final index = studentProvider.currentQuestionIndex;
-
-    // Kalau semua soal selesai, langsung ke level complete
-    if (index >= questions.length) {
-      // Semua soal selesai → langsung LevelComplete
-      Future.microtask(() {
-        Navigator.of(context).pushAndRemoveUntil(
-          SlidePageRoute(
-            page: SiswaLevelComplateView(levelsiswa: widget.levelSiswa),
-          ),
-          (route) => false, // hapus semua route sebelumnya
-        );
-      });
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    final currentQuestion = questions[index];
-
+    var authProv = context.read<AuthenticationProvider>();
     return Scaffold(
       body: Stack(
         children: [
@@ -109,126 +77,98 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
               height: MediaQuery.of(context).size.height * 0.75,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: backgroundContainerColor,
+                color: bgCardColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
               ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentQuestion.question,
-                          style: AppStyles.poppins24Medium,
+              child: Consumer<QuizProvider>(
+                builder: (context, prov, _) {
+                  var state = prov.state;
+                  if (state.isFirstTry) {
+                    return Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                      child: UnconstrainedBox(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  if (state.isFailed) return Text("Gagal load questions");
+
+                  // Semua soal sudah di-load
+                  if (prov.questions.isEmpty) {
+                    return const Center(child: Text('Tidak ada soal'));
+                  }
+                  final currentQuestion =
+                      prov.questions[prov.currentQuestionIndex];
+
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 32,
                         ),
-                        kGap20,
-                        ...List.generate(currentQuestion.answers.length, (i) {
-                          final label = ['A', 'B', 'C', 'D'][i];
-                          return _buildAnswerOption(
-                            label: label,
-                            text: currentQuestion.answers[i],
-                            isSelected:
-                                studentProvider.getAnswer(
-                                  level: widget.levelSiswa,
-                                  questionIndex: index,
-                                ) ==
-                                label,
-                            onTap:
-                                () => studentProvider.setAnswer(
-                                  level: widget.levelSiswa,
-                                  questionIndex: index,
-                                  answer: label,
-                                ),
-                          );
-                        }),
-                        kGap23,
-                        CustomButton(
-                          text: 'Next',
-                          backgroundColor: buttonNextColor,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => SiswaPreviewAnswerView(
-                                      levelSiswa: widget.levelSiswa,
-                                      questionIndex: index,
-                                      bgImage: widget.bgImage,
-                                    ),
-                              ),
-                            );
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentQuestion.question,
+
+                              style: AppStyles.poppins24Medium,
+                            ),
+                            kGap20,
+                            ...List.generate(currentQuestion.options.length, (
+                              index,
+                            ) {
+                              final label = ['A', 'B', 'C', 'D'][index];
+
+                              return AnswerOption(
+                                label: label,
+                                text: currentQuestion.options[index],
+                                isSelected: index == prov.selectedAnswerIndex,
+                                showCorrectAnswer: prov.showCorrectAnswer,
+                                isCorrect:
+                                    index == currentQuestion.correctAnswer,
+                                onTap: () => prov.selectAnswer(index),
+                                selectedColor:
+                                    selectedColor, // bisa ambil dari level
+                                backgroundColor: bgCardColor,
+                              );
+                            }),
+
+                            kGap23,
+                            CustomButton(
+                              text: 'Next',
+                              backgroundColor: buttonNextColor,
+                              onPressed: () {
+                                prov.selectedAnswerIndex != null
+                                    ? prov.nextQuestion(
+                                      authProv.user!,
+                                      widget.levelSiswa,
+                                    )
+                                    : null; // disable button kalau belum pilih jawaban
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  Image.asset(
-                    widget.imgBgLevel.toString(),
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ],
+                      ),
+                      Spacer(),
+                      Image.asset(
+                        widget.imgBgLevel.toString(),
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAnswerOption({
-    required String label,
-    required String text,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? circleAvatarColor : backgroundContainerColor,
-          borderRadius: kRadius42,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              offset: Offset(0, 4),
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: isSelected ? Colors.white : circleAvatarColor,
-              child: Text(
-                label,
-                style: AppStyles.poppins24Medium.copyWith(
-                  color: isSelected ? circleAvatarColor : Colors.white,
-                ),
-              ),
-            ),
-            kGap16,
-            Expanded(
-              child: Text(
-                text,
-                style: AppStyles.poppins24Medium.copyWith(
-                  color: isSelected ? Colors.white : AppColors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

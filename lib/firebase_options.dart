@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -53,11 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC5tx062mu8Ipdj-nG7VRtYkiLwVtZ3vGo',
-    appId: '1:12598329176:android:1e92da197fc34792e56f2d',
-    messagingSenderId: '12598329176',
-    projectId: 'quiz-mobile-90ca1',
-    storageBucket: 'quiz-mobile-90ca1.firebasestorage.app',
+    apiKey: 'AIzaSyB-zvUeqR_6hD5CBEO2r1wV8KNo0VVjVoE',
+    appId: '1:331578078190:android:be04946f100deeb3d254ff',
+    messagingSenderId: '331578078190',
+    projectId: 'mobile-quiz-4facb',
+    storageBucket: 'mobile-quiz-4facb.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyA7JWOFqASbVODWDDND_-zRxgCmVNgQBYs',
+    appId: '1:331578078190:ios:2991ded4d37e9554d254ff',
+    messagingSenderId: '331578078190',
+    projectId: 'mobile-quiz-4facb',
+    storageBucket: 'mobile-quiz-4facb.firebasestorage.app',
+    iosBundleId: 'com.example.quiz',
   );
 
 }

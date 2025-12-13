@@ -1,14 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz/app/custom_transition.dart';
-import 'package:quiz/app/extensions.dart';
+import 'package:quiz/app/finite_state.dart';
 
-import '../../app/finite_state.dart';
+import '../../app/custom_transition.dart';
+import '../../app/extensions.dart';
 import '../../commons.dart';
-import '../../provider/auth_provider.dart';
+import '../../provider/authentication_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_form_field.dart';
-
+import '../guru/pages/guru_home_view.dart';
+import '../siswa/pages/siswa_home_view.dart';
 import 'default_login_view.dart';
 
 enum LoginViewType { siswa, guru }
@@ -23,8 +24,8 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   // Controller Guru
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController passCtrl = TextEditingController();
 
   // Controller Siswa
   final TextEditingController namaController = TextEditingController();
@@ -32,24 +33,26 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    emailCtrl.dispose();
+    passCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (widget.type) {
-      case LoginViewType.siswa:
-        return _loginSiswa();
-      case LoginViewType.guru:
-        return _loginGuru();
-    }
+    return Consumer<AuthenticationProvider>(
+      builder: (context, prov, _) {
+        switch (widget.type) {
+          case LoginViewType.siswa:
+            return _loginSiswa(prov);
+          case LoginViewType.guru:
+            return _loginGuru(prov);
+        }
+      },
+    );
   }
 
-  Widget _loginSiswa() {
-    var authProv = context.read<AuthProvider>();
-
+  Widget _loginSiswa(AuthenticationProvider prov) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -57,7 +60,6 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         body: Form(
-          key: authProv.formKey,
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -106,9 +108,6 @@ class _LoginViewState extends State<LoginView> {
                           }
                           return null;
                         },
-                        onSaved: (value) {
-                          authProv.namaSiswa = value ?? "";
-                        },
                       ),
                       kGap18,
                       CustomTextFormField(
@@ -121,27 +120,14 @@ class _LoginViewState extends State<LoginView> {
                           }
                           return null;
                         },
-                        onSaved: (value) {
-                          authProv.kelasSiswa = value ?? "";
-                        },
+                        onSaved: (value) {},
                       ),
 
                       kGap18,
-                      Consumer<AuthProvider>(
-                        builder: (context, prov, _) {
-                          return CustomButton(
-                            height: sizeButton,
-                            text:
-                                prov.state == MyState.loading
-                                    ? "Loading..."
-                                    : "Lets Go",
-                            onPressed:
-                                prov.state == MyState.loading
-                                    ? null
-                                    : prov.loginSiswaWithValidation
-                                    
-                          );
-                        },
+                      CustomButton(
+                        height: sizeButton,
+                        text: prov.state.isLoading ? "Loading..." : "Lets Go",
+                        onPressed: prov.state.isLoading ? null : _login,
                       ),
                     ],
                   );
@@ -154,9 +140,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget _loginGuru() {
-    var authProv = context.read<AuthProvider>();
-
+  Widget _loginGuru(AuthenticationProvider prov) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -164,7 +148,6 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         body: Form(
-          key: authProv.formKey,
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -217,7 +200,7 @@ class _LoginViewState extends State<LoginView> {
                       kGap34,
 
                       CustomTextFormField(
-                        controller: emailController,
+                        controller: emailCtrl,
                         label: 'ID :',
                         hintText: 'Masukkan id anda',
                         validator: (value) {
@@ -226,13 +209,11 @@ class _LoginViewState extends State<LoginView> {
                           }
                           return null;
                         },
-                        onSaved: (value) {
-                          authProv.email = value ?? "";
-                        },
+                        onSaved: (value) {},
                       ),
                       kGap18,
                       CustomPasswordTextFormField(
-                        controller: passwordController,
+                        controller: passCtrl,
                         label: 'Password :',
                         hintText: 'Masukkan Password anda',
                         validator: (value) {
@@ -241,25 +222,13 @@ class _LoginViewState extends State<LoginView> {
                           }
                           return null;
                         },
-                        onSaved: (value) {
-                          authProv.password = value ?? "";
-                        },
+                        onSaved: (value) {},
                       ),
                       kGap18,
-                      Consumer<AuthProvider>(
-                        builder: (context, prov, _) {
-                          return CustomButton(
-                            height: sizeButton,
-                            text:
-                                prov.state == MyState.loading
-                                    ? "Loading..."
-                                    : "Lets Go",
-                            onPressed:
-                                prov.state == MyState.loading
-                                    ? null
-                                    : authProv.loginGuru,
-                          );
-                        },
+                      CustomButton(
+                        height: sizeButton,
+                        text: prov.state.isLoading ? "Loading..." : "Lets Go",
+                        onPressed: prov.state.isLoading ? null : _login,
                       ),
                     ],
                   );
@@ -270,5 +239,37 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  void _login() async {
+    var provider = context.read<AuthenticationProvider>();
+    switch (widget.type) {
+      case LoginViewType.siswa:
+        {
+          bool isSuccesLogin = await provider.loginStudent(
+            name: namaController.text,
+            className: kelasController.text,
+          );
+
+          if (isSuccesLogin) {
+            // ignore: use_build_context_synchronously
+            print("Succes login");
+            context.fadeRemoveUntil(SiswaHomeView());
+          }
+        }
+
+      case LoginViewType.guru:
+        {
+          bool isSuccesLogin = await provider.loginTeacher(
+            email: emailCtrl.text,
+            password: passCtrl.text,
+          );
+
+          if (isSuccesLogin) {
+            // ignore: use_build_context_synchronously
+            context.fadeRemoveUntil(GuruHomeView());
+          }
+        }
+    }
   }
 }

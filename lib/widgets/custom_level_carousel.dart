@@ -1,9 +1,13 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+
 import '../app/custom_transition.dart';
 import '../commons.dart';
 import '../pages/guru/pages/leaderboard_view.dart';
 import '../pages/guru/widget/data_guru.dart';
+import '../pages/login_page/default_login_view.dart';
+import '../provider/authentication_provider.dart';
 import 'custom_button.dart';
 
 typedef LevelMiddleBuilder = Widget Function(Map<String, dynamic> level);
@@ -54,6 +58,7 @@ class _CustomLevelCarouselState extends State<CustomLevelCarousel> {
         // BACKGROUND ANIMATED CONTAINER
         AnimatedContainer(
           duration: const Duration(milliseconds: 100),
+          curve: Curves.easeIn,
           decoration: BoxDecoration(image: backgroundLevel(_currentIndex)),
         ),
 
@@ -202,6 +207,30 @@ class _CustomLevelCarouselState extends State<CustomLevelCarousel> {
               ),
             );
           },
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: IconButton(
+            padding: EdgeInsets.only(top: 48, left: 16),
+
+            color: AppColors.white,
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              size: 26,
+              shadows: [
+                // BoxShadow(color: AppColors.black.withAlpha(100), blurRadius: 5),
+              ],
+            ),
+
+            onPressed: () {
+              context.read<AuthenticationProvider>().logout();
+              Navigator.pushAndRemoveUntil(
+                context,
+                ScalePageRoute(page: DefaultLoginView()),
+                (route) => route.isFirst,
+              );
+            },
+          ),
         ),
       ],
     );
