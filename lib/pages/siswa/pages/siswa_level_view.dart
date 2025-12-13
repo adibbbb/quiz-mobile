@@ -1,16 +1,60 @@
-import 'package:quiz/widgets/custom_button.dart';
-
+import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
+import '../../../widgets/custom_button.dart';
+import 'siswa_preview_jawaban_view.dart';
 
-class SiswaLevel3View extends StatefulWidget {
-  const SiswaLevel3View({super.key});
+class SiswaLevelView extends StatefulWidget {
+  final int levelSiswa;
+  final String bgImage;
+
+  const SiswaLevelView({
+    super.key,
+    required this.levelSiswa,
+    required this.bgImage,
+  });
 
   @override
-  State<SiswaLevel3View> createState() => _SiswaLevel3ViewState();
+  State<SiswaLevelView> createState() => _SiswaLevelViewState();
 }
 
-class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
+class _SiswaLevelViewState extends State<SiswaLevelView> {
   String? selectedAnswer;
+
+  late final Color backgroundContainerColor;
+  late final Color circleAvatarColor;
+  late final Color buttonNextColor;
+
+  @override
+  void initState() {
+    super.initState();
+    _setColorsByLevel();
+  }
+
+  void _setColorsByLevel() {
+    switch (widget.levelSiswa) {
+      case 1:
+        backgroundContainerColor = Colors.white;
+        circleAvatarColor = AppColors.blue;
+        buttonNextColor = AppColors.blue;
+        break;
+      case 2:
+        backgroundContainerColor = Colors.white;
+        circleAvatarColor = AppColors.orange;
+        buttonNextColor = AppColors.orange;
+
+        break;
+      case 3:
+        backgroundContainerColor = Colors.white;
+        circleAvatarColor = AppColors.blueDongker;
+        buttonNextColor = AppColors.blueDongker;
+
+        break;
+      default:
+        backgroundContainerColor = Colors.white;
+        circleAvatarColor = AppColors.blue;
+        buttonNextColor = AppColors.blue;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,28 +63,7 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(AppImages.imgBgLevel3),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 40,
-                ),
-                child: Column(children: [_appBar()]),
-              ),
-            ),
-          ),
-
-          // White Container dari bawah
+          _backgroundLevel(),
           Align(
             alignment: Alignment.bottomCenter,
             child: LayoutBuilder(
@@ -48,11 +71,12 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                 final bool isTablet = constraints.maxWidth >= 600;
                 final double sizeQuestionText = isTablet ? 24 : 16;
                 final double sizeButtonNext = isTablet ? 70 : 55;
+
                 return Container(
                   height: screenHeight * 0.75,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: backgroundContainerColor,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -60,7 +84,6 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                   ),
                   child: Column(
                     children: [
-                      // Bagian atas dengan padding untuk teks dan jawaban
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
@@ -70,7 +93,7 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '"Ani pergi ke sekolah dengan berjalan kaki setiap pagi." Pertanyaan: Siapa yang pergi ke sekolah?' ,
+                              '"Ani pergi ke sekolah dengan berjalan kaki setiap pagi." Pertanyaan: Siapa yang pergi ke sekolah?',
                               style: AppStyles.poppins24Medium.copyWith(
                                 fontSize: sizeQuestionText,
                               ),
@@ -85,19 +108,27 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                             _buildAnswerOption('D', 'Sebew'),
                             kGap23,
                             CustomButton(
-                              onPressed: () {},
-                              height: sizeButtonNext,
                               text: 'Next',
-                              backgroundColor: AppColors.blueDongker,
+                              height: sizeButtonNext,
+                              backgroundColor: buttonNextColor,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                    page: SiswaPreviewAnswerView(
+                                      levelSiswa: widget.levelSiswa,
+                                      bgImage: AppImages.imgBgLevel1,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
                       ),
-
                       Spacer(),
-
                       Image.asset(
-                        AppImages.imgbgsoalLevel3,
+                        AppImages.imgbgsoalLevel1,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -112,7 +143,6 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
     );
   }
 
-  // Widget opsi jawaban dengan radio
   Widget _buildAnswerOption(String label, String text) {
     bool isSelected = selectedAnswer == label;
 
@@ -133,16 +163,16 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                     vertical: 12,
                   )
                   : EdgeInsetsDirectional.symmetric(horizontal: 4, vertical: 3);
+
           return Container(
             padding: paddingButton,
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.blueDongker : Colors.white,
+              color: isSelected ? circleAvatarColor : backgroundContainerColor,
               borderRadius: kRadius42,
               boxShadow: [
                 BoxShadow(
                   blurRadius: 4,
                   offset: Offset(0, 4),
-                  // ignore: deprecated_member_use
                   color: Color(0xff000000).withOpacity(0.1),
                 ),
               ],
@@ -151,12 +181,12 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
               children: [
                 CircleAvatar(
                   backgroundColor:
-                      isSelected ? Colors.white : AppColors.blueDongker,
+                      isSelected ? Colors.white : circleAvatarColor,
                   child: Text(
                     label,
                     style: AppStyles.poppins24Medium.copyWith(
                       fontSize: sizeRadioButtonText,
-                      color: isSelected ? AppColors.blueDongker : Colors.white,
+                      color: isSelected ? circleAvatarColor : Colors.white,
                     ),
                   ),
                 ),
@@ -166,7 +196,7 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
                     text,
                     style: AppStyles.poppins24Medium.copyWith(
                       fontSize: sizeRadioButtonText,
-                      color: isSelected ? Colors.white : AppColors.blueDongker,
+                      color: isSelected ? Colors.white : AppColors.black,
                     ),
                   ),
                 ),
@@ -188,6 +218,25 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
     );
   }
 
+  Container _backgroundLevel() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(widget.bgImage),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          child: Column(children: [_appBar()]),
+        ),
+      ),
+    );
+  }
+
   Row _appBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,7 +252,7 @@ class _SiswaLevel3ViewState extends State<SiswaLevel3View> {
           ),
         ),
         Text(
-          'LEVEL 3',
+          'LEVEL ${widget.levelSiswa}',
           style: AppStyles.lilitaOne42.copyWith(color: AppColors.white),
         ),
         kGap25,

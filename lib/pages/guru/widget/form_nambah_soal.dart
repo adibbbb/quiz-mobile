@@ -1,25 +1,38 @@
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../commons.dart';
-import '../../../provider/pertanyaan_guru_provider.dart';
+import '../../../provider/soal_guru_provider.dart';
+import '../../../provider/auth_provider.dart';
 
 class TeacherQuestionForm extends StatelessWidget {
-  const TeacherQuestionForm({super.key});
+  final int level; // tambahkan ini
+
+  const TeacherQuestionForm({super.key, required this.level});
 
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<TeacherQuestionProvider>(context);
+    final authProv = Provider.of<AuthProvider>(context, listen: false);
+    final guruId = authProv.loggedGuru?['id'] ?? '';
+
+    final questions = prov.getQuestions(level); 
 
     return ListView.builder(
-      itemCount: prov.questions.length,
+      itemCount: questions.length,
       itemBuilder: (context, index) {
-        final question = prov.questions[index];
+        final question = questions[index];
         return TeacherQuestionCard(
           questionData: question,
-          onDelete: () => prov.removeQuestion(index),
-          onQuestionChanged: (text) => prov.updateQuestion(index, text),
+          onDelete:
+              () => prov.removeQuestionAt(
+                level: level,
+                index: index,
+                guruId: guruId,
+              ),
+          onQuestionChanged: (text) => prov.updateQuestion(level, index, text),
           onAnswerChanged:
-              (aIndex, text) => prov.updateAnswer(index, aIndex, text),
-          onSelectAnswer: (aIndex) => prov.selectAnswer(index, aIndex),
+              (aIndex, text) => prov.updateAnswer(level, index, aIndex, text),
+          onSelectAnswer: (aIndex) => prov.selectAnswer(level, index, aIndex),
         );
       },
     );
@@ -65,6 +78,7 @@ class TeacherQuestionCard extends StatelessWidget {
         children: [
           // TextField Soal
           TextField(
+            controller: questionData.questionController,
             onChanged: onQuestionChanged,
             decoration: const InputDecoration(
               border: InputBorder.none,
@@ -72,7 +86,6 @@ class TeacherQuestionCard extends StatelessWidget {
             ),
             maxLines: null,
           ),
-
           const Divider(),
 
           // Jawaban
@@ -91,6 +104,7 @@ class TeacherQuestionCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
+                        controller: questionData.answerControllers[i],
                         onChanged: (text) => onAnswerChanged(i, text),
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -107,7 +121,7 @@ class TeacherQuestionCard extends StatelessWidget {
           ),
 
           const Divider(),
-          kGap8,
+          SizedBox(height: 8),
 
           // Hapus
           Row(

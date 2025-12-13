@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:quiz/pages/guru/pages/guru_level_view.dart';
 
 import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
@@ -7,9 +8,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../widgets/custom_level_carousel.dart';
 import '../widget/data_guru.dart';
-import 'guru_level1_view.dart';
-import 'guru_level2_view.dart';
-import 'guru_level3_view.dart';
 
 class GuruHomeView extends StatefulWidget {
   const GuruHomeView({super.key});
@@ -35,19 +33,33 @@ class _GuruHomeViewState extends State<GuruHomeView> {
                 case 0:
                   Navigator.push(
                     context,
-                    SlidePageRoute(page: GuruLevel1View()),
+                    SlidePageRoute(
+                      page: GuruLevelView(
+                        level: 1,
+                        bgImage: AppImages.imgBgLevel1,
+                        titleColor: AppColors.blue,
+                      ),
+                    ),
                   );
                   break;
                 case 1:
                   Navigator.push(
                     context,
-                    SlidePageRoute(page: GuruLevel2View()),
+                    SlidePageRoute(page: GuruLevelView(
+                        level: 2,
+                        bgImage: AppImages.imgBgLevel2,
+                        titleColor: AppColors.orange,
+                      ),),
                   );
                   break;
                 case 2:
                   Navigator.push(
                     context,
-                    SlidePageRoute(page: GuruLevel3View()),
+                    SlidePageRoute(page: GuruLevelView(
+                        level: 3,
+                        bgImage: AppImages.imgBgLevel3,
+                        titleColor: AppColors.blueDongker,
+                      ),),
                   );
                   break;
               }

@@ -23,6 +23,7 @@ class AuthProvider extends ChangeNotifier {
 
   String namaSiswa = '';
   String kelasSiswa = '';
+  Map<String, dynamic>? loggedSiswa;
 
   //------------------------------------------------------
   // PROVIDER GURU
@@ -49,7 +50,11 @@ class AuthProvider extends ChangeNotifier {
         }
       },
       (successData) {
-        loggedGuru = successData;
+        // Tambahkan docId ke data guru tanpa ubah AuthServices
+        loggedGuru = {
+          ...successData, // semua field dari Firestore
+          'id': email, // karena di AuthServices kamu pakai doc id = email
+        };
 
         state = MyState.loaded;
         notifyListeners();
@@ -58,7 +63,6 @@ class AuthProvider extends ChangeNotifier {
         if (context != null) {
           showSuccessDialog(context, "Login berhasil!");
           Future.delayed(const Duration(milliseconds: 500)).then((_) {
-            // ignore: use_build_context_synchronously
             context.slideRemoveUntil(GuruHomeView());
           });
         }
@@ -106,21 +110,26 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       // Simpan ke Firestore
-      await FirebaseFirestore.instance.collection('siswa').add({
+      final docRef = await FirebaseFirestore.instance.collection('siswa').add({
         'nama': namaSiswa.trim(),
         'kelas': kelasSiswa.trim(),
         'createdAt': FieldValue.serverTimestamp(),
       });
+
+      // Simpan ID dokumen supaya bisa akses soal & submit jawaban
+      loggedSiswa = {
+        'id': docRef.id,
+        'nama': namaSiswa.trim(),
+        'kelas': kelasSiswa.trim(),
+      };
 
       state = MyState.loaded;
       notifyListeners();
 
       var context = navigatorKey.currentState?.context;
       if (context != null) {
-        // ignore: use_build_context_synchronously
-        showSuccessDialog(context, "berhasil masuk!");
+        showSuccessDialog(context, "Berhasil masuk!");
         Future.delayed(const Duration(milliseconds: 500)).then((_) {
-          // ignore: use_build_context_synchronously
           context.slideRemoveUntil(SiswaHomeView());
         });
       }
@@ -130,7 +139,6 @@ class AuthProvider extends ChangeNotifier {
 
       var context = navigatorKey.currentState?.context;
       if (context != null) {
-        // ignore: use_build_context_synchronously
         showErrorDialog(context, "Gagal menyimpan data: $e");
       }
     }

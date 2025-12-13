@@ -11,4 +11,5 @@ abstract class AppColors {
   static const Color orangeMuda = Color(0xffF4A261);
   static const Color green = Color(0xff8BC34A);
   static const Color greenLumut = Color(0xff2A9D8F);
+  static const Color red = Color(0xffD32828);
 }

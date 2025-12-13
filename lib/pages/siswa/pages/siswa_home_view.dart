@@ -1,12 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:quiz/pages/siswa/pages/siswa_level1_view.dart';
 
 import '../../../app/custom_transition.dart';
+import '../../../commons.dart';
 import '../../../widgets/custom_level_carousel.dart';
 import '../../guru/widget/data_guru.dart';
-import 'siswa_level2_view.dart';
-import 'siswa_level3_view.dart';
+
+import 'siswa_level_view.dart';
 
 class SiswaHomeView extends StatefulWidget {
   const SiswaHomeView({super.key});
@@ -26,18 +25,41 @@ class _SiswaHomeViewState extends State<SiswaHomeView> {
         carouselController: _carouselController,
         initialIndex: 0,
         isShowButton: false,
-        middleBuilder:
-            (level) => Image.asset(level['image'], ),
+        middleBuilder: (level) => Image.asset(level['image']),
         onLevelTap: (level, index) {
           switch (index) {
             case 0:
-              Navigator.push(context, SlidePageRoute(page: SiswaLevel1View()));
+              Navigator.push(
+                context,
+                SlidePageRoute(
+                  page: SiswaLevelView(
+                    levelSiswa: 1,
+                    bgImage: AppImages.imgBgLevel1,
+                  ),
+                ),
+              );
               break;
             case 1:
-              Navigator.push(context, SlidePageRoute(page: SiswaLevel2View()));
+              Navigator.push(
+                context,
+                SlidePageRoute(
+                  page: SiswaLevelView(
+                    levelSiswa: 2,
+                    bgImage: AppImages.imgBgLevel2,
+                  ),
+                ),
+              );
               break;
             case 2:
-              Navigator.push(context, SlidePageRoute(page: SiswaLevel3View()));
+              Navigator.push(
+                context,
+                SlidePageRoute(
+                  page: SiswaLevelView(
+                    levelSiswa: 3,
+                    bgImage: AppImages.imgBgLevel3,
+                  ),
+                ),
+              );
               break;
           }
         },
