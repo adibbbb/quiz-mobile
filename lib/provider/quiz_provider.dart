@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quiz/app/custom_transition.dart';
+import 'package:quiz/app/navigator_keys.dart';
 import 'package:quiz/models/app_user.dart';
+import 'package:quiz/pages/siswa/pages/siswa_level_complate_view.dart';
 
 import '../app/finite_state.dart';
 import '../app/result.dart';
@@ -85,6 +88,8 @@ class QuizProvider extends ChangeNotifier {
     }
   }
 
+  bool get isLastIndexQuestion => currentQuestionIndex == questions.length - 1;
+
   // ==============================
   // Next question
   // ==============================
@@ -95,7 +100,7 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
 
     // delay biar user bisa lihat jawaban benar
-    Future.delayed(const Duration(seconds: 1), () async {
+    Future.delayed(const Duration(milliseconds: 1500), () async {
       selectedAnswers.add(selectedAnswerIndex!);
 
       if (currentQuestionIndex < questions.length - 1) {
@@ -127,20 +132,29 @@ class QuizProvider extends ChangeNotifier {
       score: calculateScore(),
       time: 0, // kalau pakai timer
       completedAt: DateTime.now(),
+      userName: user.name,
     );
 
     final userName = user.name;
     await submitAttempt(attempt: attempt, userName: userName);
+    // harusnya masuk ke halaman leader board
+    navigatorKey.currentContext!.fadeReplace(SiswaLevelComplateView(attempt));
   }
 
   int calculateScore() {
-    int score = 0;
+    if (questions.isEmpty) return 0;
+
+    int correctCount = 0;
+
     for (int i = 0; i < questions.length; i++) {
       if (selectedAnswers[i] == questions[i].correctAnswer) {
-        score += questions[i].score;
+        correctCount++;
       }
     }
-    return score;
+
+    // Hitung persentase, bulatkan ke integer
+    double ratio = (correctCount / questions.length) * 100;
+    return ratio.round(); // .round() supaya hasilnya bulat, misal 87%
   }
 
   // ==============================

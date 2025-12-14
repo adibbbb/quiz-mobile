@@ -5,11 +5,15 @@ class CustomTabBar extends StatefulWidget {
   final List<Widget> children;
   final double borderRadius;
 
+  /// ✨ Callback ketika tab berubah
+  final void Function(int index)? onTabChange;
+
   const CustomTabBar({
     super.key,
     required this.tabs,
     required this.children,
     this.borderRadius = 42,
+    this.onTabChange,
   });
 
   @override
@@ -30,7 +34,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
             borderRadius: BorderRadius.circular(widget.borderRadius),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xff000000).withValues(alpha: 0.1),
+                color: const Color(0xff000000).withOpacity(0.1),
                 blurRadius: 4,
                 offset: const Offset(0, 4),
               ),
@@ -85,6 +89,11 @@ class _CustomTabBarState extends State<CustomTabBar> {
         setState(() {
           selectedIndex = index;
         });
+
+        // 🔔 Panggil callback jika ada
+        if (widget.onTabChange != null) {
+          widget.onTabChange!(index);
+        }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),

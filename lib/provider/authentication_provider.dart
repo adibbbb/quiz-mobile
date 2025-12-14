@@ -57,17 +57,17 @@ class AuthenticationProvider extends ChangeNotifier {
     _setError(null);
 
     try {
-      // 1️⃣ Guru (Firebase Auth)
-      if (_service.currentFirebaseUser != null) {
-        _setAuthStatus(AuthStatus.authenticatedTeacher);
+      // 1️⃣ Siswa (Local session)
+      final isStudent = await _service.isStudentLoggedIn();
+      if (isStudent) {
+        _setAuthStatus(AuthStatus.authenticatedStudent);
         _setState(MyState.loaded);
         return;
       }
 
-      // 2️⃣ Siswa (Local session)
-      final isStudent = await _service.isStudentLoggedIn();
-      if (isStudent) {
-        _setAuthStatus(AuthStatus.authenticatedStudent);
+      // 2️⃣  Guru (Firebase Auth)
+      if (_service.currentFirebaseUser != null) {
+        _setAuthStatus(AuthStatus.authenticatedTeacher);
         _setState(MyState.loaded);
         return;
       }

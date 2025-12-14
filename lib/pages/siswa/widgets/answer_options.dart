@@ -1,6 +1,6 @@
 import 'package:quiz/commons.dart';
 
-class AnswerOption extends StatelessWidget {
+class AnswerOptionWidget extends StatelessWidget {
   final String label;
   final String text;
   final bool isSelected;
@@ -10,7 +10,7 @@ class AnswerOption extends StatelessWidget {
   final Color selectedColor;
   final Color backgroundColor;
 
-  const AnswerOption({
+  const AnswerOptionWidget({
     super.key,
     required this.label,
     required this.text,

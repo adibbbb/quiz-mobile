@@ -116,7 +116,7 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              currentQuestion.question,
+                              "${prov.currentQuestionIndex + 1}. ${currentQuestion.question}",
 
                               style: AppStyles.poppins24Medium,
                             ),
@@ -126,7 +126,7 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                             ) {
                               final label = ['A', 'B', 'C', 'D'][index];
 
-                              return AnswerOption(
+                              return AnswerOptionWidget(
                                 label: label,
                                 text: currentQuestion.options[index],
                                 isSelected: index == prov.selectedAnswerIndex,
@@ -134,15 +134,16 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                                 isCorrect:
                                     index == currentQuestion.correctAnswer,
                                 onTap: () => prov.selectAnswer(index),
-                                selectedColor:
-                                    selectedColor, // bisa ambil dari level
+                                // bisa ambil dari level
+                                selectedColor: selectedColor,
                                 backgroundColor: bgCardColor,
                               );
                             }),
 
                             kGap23,
                             CustomButton(
-                              text: 'Next',
+                              text:
+                                  prov.isLastIndexQuestion ? "Selesai" : 'Next',
                               backgroundColor: buttonNextColor,
                               onPressed: () {
                                 prov.selectedAnswerIndex != null

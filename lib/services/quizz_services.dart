@@ -82,4 +82,35 @@ class QuizService {
       return const Failure('Gagal menyimpan hasil quiz');
     }
   }
+
+  // ==========================================================
+  // SECTION: LEADERBOARD
+  // ==========================================================
+
+  /// Ambil leaderboard per quizId / level
+  ResultFuture<List<QuizAttempt>> getLeaderboard(
+    String quizId, {
+    int limit = 100,
+  }) async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('quiz_attempts')
+              .where('quizId', isEqualTo: quizId)
+              .orderBy('score', descending: true) // skor tertinggi di atas
+              .orderBy(
+                'completedAt',
+                descending: false,
+              ) // jika sama skor, siapa selesai duluan
+              .limit(limit)
+              .get();
+
+      final attempts =
+          snapshot.docs.map((doc) => QuizAttempt.fromMap(doc.data())).toList();
+
+      return Success(attempts);
+    } catch (e) {
+      return Failure('Gagal mengambil leaderboard: ${e.toString()}');
+    }
+  }
 }

@@ -7,6 +7,7 @@ import 'commons.dart';
 import 'pages/on_boarding/on_boarding_view.dart';
 import 'pages/splash_screen.dart';
 import 'provider/authentication_provider.dart';
+import 'provider/leaderboard_provider.dart';
 import 'provider/quiz_provider.dart';
 import 'provider/teacher_provider.dart';
 import 'services/authentication_services.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
         //
         ChangeNotifierProvider(
           create: (_) => TeacherProvider(TeacherService(db: firestore)),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LeaderboardProvider(QuizService(db: firestore)),
         ),
       ],
       child: MaterialApp(

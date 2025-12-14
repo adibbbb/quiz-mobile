@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:quiz/models/quiz_attempt.dart';
+
 import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
 import '../../../widgets/custom_button.dart';
@@ -7,8 +9,8 @@ import '../../guru/pages/leaderboard_view.dart';
 import 'siswa_home_view.dart';
 
 class SiswaLevelComplateView extends StatefulWidget {
-  final int levelsiswa;
-  const SiswaLevelComplateView({super.key, required this.levelsiswa});
+  final QuizAttempt result;
+  const SiswaLevelComplateView(this.result, {super.key});
 
   @override
   State<SiswaLevelComplateView> createState() => _SiswaLevelComplateViewState();
@@ -19,20 +21,6 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Ambil provider
-
-    // Ambil data soal & jawaban
-    // final level = widget.levelsiswa;
-    // final questions = teacherProvider.getQuestions(level);
-    // final correctAnswers =
-    //     questions
-    //         .map((q) => ['A', 'B', 'C', 'D'][q.selectedAnswerIndex])
-    //         .toList();
-    // final scoreRaw = studentProvider.correctAnswersCount(level, correctAnswers);
-    // final total = questions.length;
-
-    // final scorePercent = total > 0 ? ((scoreRaw / total) * 100).round() : 0;
 
     return Scaffold(
       body: Stack(
@@ -82,7 +70,10 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                         ),
                         kGap50,
                         Image.asset(
-                          AppImages.imgBintang5,
+                          (widget.result.score ?? 0) < 70
+                              ? AppImages.imgBintang3
+                              : AppImages.imgBintang5,
+
                           // ? AppImages.imgBintang5
                           // : AppImages.imgBintang3,
                           height: isTablet ? 130 : 120,
@@ -108,7 +99,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                             color: AppColors.orange,
                           ),
                           child: Text(
-                            '100',
+                            '${widget.result.score}',
                             style: AppStyles.montserrat64Bold.copyWith(
                               color: AppColors.white,
                             ),
@@ -126,10 +117,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                                 text: 'BACK',
                                 backgroundColor: AppColors.orange,
                                 onPressed: () {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    SlidePageRoute(page: SiswaHomeView()),
-                                    (route) => false,
-                                  );
+                                  context.fadeRemoveUntil(SiswaHomeView());
                                 },
                               ),
                             ),
@@ -138,10 +126,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                                 text: 'NEXT',
                                 backgroundColor: AppColors.orange,
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    SlidePageRoute(page: LeaderboardView()),
-                                  );
+                                  context.fadeTo(LeaderboardView());
                                 },
                               ),
                             ),
