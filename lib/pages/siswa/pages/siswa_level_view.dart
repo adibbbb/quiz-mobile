@@ -160,16 +160,19 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                                   children: [
                                     Text(
                                       "Jawaban benar : ${optionsLabel.elementAt(currentQuestion.correctAnswer)}",
+                                      style: AppStyles.poppins24Medium.copyWith(
+                                        fontSize: 20,
+                                      ),
                                     ),
 
                                     CustomButton(
                                       height: 50,
-                                      width: 100,
+                                      width: 120,
                                       text:
                                           prov.isLastIndexQuestion
                                               ? "Done"
                                               : 'Next',
-                                      backgroundColor: AppColors.greenLumut,
+                                      backgroundColor: AppColors.green,
                                       onPressed: () {
                                         prov.selectedAnswerIndex != null
                                             ? prov.nextQuestion(

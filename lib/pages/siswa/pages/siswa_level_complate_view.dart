@@ -17,6 +17,20 @@ class SiswaLevelComplateView extends StatefulWidget {
 }
 
 class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
+  double _bintangOpacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Trigger fade-in saat halaman muncul
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _bintangOpacity = 1.0;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -47,7 +61,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
           Center(
             child: Container(
               width: screenWidth * 0.85,
-              height: screenHeight * 0.85,
+              height: screenHeight * 0.75,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.85),
                 borderRadius: BorderRadius.circular(73),
@@ -55,7 +69,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final bool isTablet = constraints.maxWidth >= 600;
-                  final double sizeFontText = isTablet ? 64 : 40;
+                  final double sizeFontText = isTablet ? 80 : 40;
                   final EdgeInsetsGeometry padding =
                       isTablet
                           ? EdgeInsets.fromLTRB(50, 100, 50, 50)
@@ -66,17 +80,19 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                       children: [
                         Image.asset(
                           AppImages.imgLevelComplate,
-                          height: isTablet ? 150 : 90,
+                          height: isTablet ? 150 : 140,
                         ),
-                        kGap50,
-                        Image.asset(
-                          (widget.result.score ?? 0) < 70
-                              ? AppImages.imgBintang3
-                              : AppImages.imgBintang5,
-
-                          // ? AppImages.imgBintang5
-                          // : AppImages.imgBintang3,
-                          height: isTablet ? 130 : 120,
+                        kGap60,
+                        AnimatedOpacity(
+                          opacity: _bintangOpacity,
+                          duration: const Duration(milliseconds: 800),
+                          curve: Curves.easeInOut,
+                          child: Image.asset(
+                            (widget.result.score ?? 0) < 70
+                                ? AppImages.imgBintang3
+                                : AppImages.imgBintang5,
+                            height: isTablet ? 130 : 120,
+                          ),
                         ),
                         kGap50,
                         Text(
