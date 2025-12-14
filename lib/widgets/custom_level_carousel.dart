@@ -212,16 +212,8 @@ class _CustomLevelCarouselState extends State<CustomLevelCarousel> {
           alignment: Alignment.topLeft,
           child: IconButton(
             padding: EdgeInsets.only(top: 48, left: 16),
-
             color: AppColors.white,
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              size: 26,
-              shadows: [
-                // BoxShadow(color: AppColors.black.withAlpha(100), blurRadius: 5),
-              ],
-            ),
-
+            icon: Icon(Icons.arrow_back_ios_new, size: 26),
             onPressed: () {
               context.read<AuthenticationProvider>().logout();
               Navigator.pushAndRemoveUntil(

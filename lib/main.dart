@@ -11,7 +11,10 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SharedPreferences.getInstance();
 
+  final prefs = await SharedPreferences.getInstance();
+  final bool hasSeenOnboarding = prefs.getBool('has_seen_onboarding') ?? false;
+
   FirebaseAuth.instance.setLanguageCode('id');
 
-  runApp(MyApp());
+  runApp(MyApp(hasSeenOnboarding: hasSeenOnboarding));
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../../../resources/colors_app.dart';
+import 'package:quiz/commons.dart';
 
 class AnswerOption extends StatelessWidget {
   final String label;
@@ -28,7 +26,7 @@ class AnswerOption extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bg = backgroundColor;
 
-    Color textColor = Colors.black;
+    Color textColor = isSelected ? Colors.white : Colors.black;
 
     if (showCorrectAnswer) {
       if (isCorrect) {
@@ -52,52 +50,79 @@ class AnswerOption extends StatelessWidget {
         labelColor = Colors.black; // lainnya
       }
     } else {
-      labelColor = isSelected ? selectedColor : Colors.black;
+      labelColor = isSelected ? selectedColor : Colors.white;
     }
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              blurRadius: 4,
-              offset: Offset(0, 2),
-              color: Colors.black12,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor:
-                  showCorrectAnswer
-                      ? backgroundColor
-                      : isSelected
-                      ? backgroundColor
-                      : selectedColor,
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: labelColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+      onTap: showCorrectAnswer ? null : onTap,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isTablet = constraints.maxWidth >= 600;
+          final double sizeAnswerText = isTablet ? 22 : 16;
+          final EdgeInsetsGeometry padding =
+              isTablet
+                  ? EdgeInsets.fromLTRB(25, 15, 15, 15) // ubah lagi sesuai tab
+                  : EdgeInsets.fromLTRB(12, 12, 8, 12);
+
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 6),
+            padding: padding,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                  color: Colors.black12,
                 ),
-              ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(color: textColor, fontSize: 18),
-              ),
+            child: Row(
+              children: [
+                // 🅰️ LABEL
+                CircleAvatar(
+                  backgroundColor:
+                      showCorrectAnswer
+                          ? backgroundColor
+                          : isSelected
+                          ? backgroundColor
+                          : selectedColor,
+                  child: Text(
+                    label,
+                    style: AppStyles.poppins24Medium.copyWith(
+                      color: labelColor,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+
+                kGap12,
+
+                // 📄 TEXT JAWABAN
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    text,
+                    style: AppStyles.poppins24Medium.copyWith(
+                      color: textColor,
+                      fontSize: sizeAnswerText,
+                    ),
+                  ),
+                ),
+
+                Spacer(),
+                // 🔘 RADIO BUTTON
+                Radio<bool>(
+                  value: true,
+                  groupValue: isSelected,
+                  onChanged: showCorrectAnswer ? null : (_) => onTap(),
+                  activeColor: Colors.white,
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

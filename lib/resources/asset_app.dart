@@ -2,6 +2,9 @@ const String imagePath = 'assets/images';
 const String iconPath = 'assets/icons';
 
 class AppImages {
+  static const String imgOnBoarding1 = '$imagePath/img-on-boarding1.png';
+  static const String imgOnBoarding2 = '$imagePath/img-on-boarding2.png';
+  static const String imgOnBoarding3 = '$imagePath/img-on-boarding3.png';
   static const String imgQuizGo = '$imagePath/img-quizgo.png';
   static const String imgBgHome = '$imagePath/img-home.png';
   static const String imgLogin = '$imagePath/img-login.png';

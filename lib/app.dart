@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'app/navigator_keys.dart';
 import 'commons.dart';
+import 'pages/on_boarding/on_boarding_view.dart';
 import 'pages/splash_screen.dart';
 import 'provider/authentication_provider.dart';
 import 'provider/quiz_provider.dart';
@@ -13,7 +14,9 @@ import 'services/quizz_services.dart';
 import 'services/teacher_services.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSeenOnboarding;
+
+  const MyApp({super.key, required this.hasSeenOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: navigatorKey,
         title: 'QuizGo',
-        home: const SplashView(),
+        home: hasSeenOnboarding ? SplashView() : OnBoardingView(),
       ),
     );
   }

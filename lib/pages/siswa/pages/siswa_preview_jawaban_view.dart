@@ -251,6 +251,7 @@ class _SiswaPreviewAnswerViewState extends State<SiswaPreviewAnswerView> {
               ),
               if (!isPreview)
                 Radio<String>(
+                  activeColor: Colors.white,
                   value: label,
                   groupValue: selectedAnswer,
                   onChanged: (value) {

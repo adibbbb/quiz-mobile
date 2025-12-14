@@ -1,7 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:provider/provider.dart';
-import 'package:quiz/pages/login_page/default_login_view.dart';
-import 'package:quiz/provider/authentication_provider.dart';
 
 import '../../../app/custom_transition.dart';
 import '../../../commons.dart';
@@ -68,26 +65,6 @@ class _GuruHomeViewState extends State<GuruHomeView> {
                   break;
               }
             },
-          ),
-          Positioned(
-            top: 50,
-            left: 16,
-            child: GestureDetector(
-              onTap: () {
-                context.read<AuthenticationProvider>().logout();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  ScalePageRoute(page: DefaultLoginView()),
-                  (route) => route.isFirst,
-                );
-                // context.read<AuthProvider>().logoutGuru();
-              },
-              child: Icon(
-                Icons.arrow_back_ios_rounded,
-                color: AppColors.white,
-                size: 25,
-              ),
-            ),
           ),
         ],
       ),
