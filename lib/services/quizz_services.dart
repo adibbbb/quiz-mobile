@@ -83,6 +83,41 @@ class QuizService {
     }
   }
 
+  ResultFuture<void> syncQuestions({
+    required String quizId,
+    required List<Question> questions,
+    required List<String> deletedQuestionIds,
+  }) async {
+    try {
+      final batch = _db.batch();
+      final collection = _db
+          .collection('quizzes')
+          .doc(quizId)
+          .collection('questions');
+
+      /// DELETE
+      for (final id in deletedQuestionIds) {
+        batch.delete(collection.doc(id));
+      }
+
+      /// ADD + UPDATE (AMAN)
+      for (final q in questions) {
+        final doc =
+            (q.id == null || q.id!.isEmpty)
+                ? collection
+                    .doc() // soal baru
+                : collection.doc(q.id!); // soal lama
+
+        batch.set(doc, q.copyWith(id: doc.id).toMap(), SetOptions(merge: true));
+      }
+
+      await batch.commit();
+      return const Success(null);
+    } catch (e) {
+      return const Failure('Gagal menyimpan perubahan soal');
+    }
+  }
+
   // ==========================================================
   // SECTION: LEADERBOARD
   // ==========================================================

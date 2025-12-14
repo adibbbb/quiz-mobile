@@ -1,9 +1,15 @@
+import 'package:provider/provider.dart';
+import 'package:quiz/app/finite_state.dart';
+import 'package:quiz/app/navigator_keys.dart';
+import 'package:quiz/models/question.dart';
+import 'package:quiz/provider/teacher_provider.dart';
+
 import '../../../app/extensions.dart';
 import '../../../commons.dart';
 import '../../../widgets/custom_button.dart';
 import '../widget/teacher_question_form.dart';
 
-class GuruLevelView extends StatelessWidget {
+class GuruLevelView extends StatefulWidget {
   final int level;
   final String bgImage;
   final Color titleColor;
@@ -16,21 +22,44 @@ class GuruLevelView extends StatelessWidget {
   });
 
   @override
+  State<GuruLevelView> createState() => _GuruLevelViewState();
+}
+
+class _GuruLevelViewState extends State<GuruLevelView> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      var prov = context.read<TeacherProvider>();
+      switch (widget.level) {
+        case 1:
+          prov.fetchQuestions("quiz_1");
+          break;
+        case 2:
+          prov.fetchQuestions("quiz_2");
+          break;
+        case 3:
+          prov.fetchQuestions("quiz_3");
+          break;
+        default:
+      }
+    });
+  }
+
+  ScrollController scrlController = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
-    // final teacherProvider = Provider.of<TeacherQuestionProvider>(context);
-    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    // final guruId = authProvider.loggedGuru?['id'] ?? '';
-
-    // if (teacherProvider.getQuestions(level).isEmpty) {
-    //   teacherProvider.fetchQuestions(level, guruId);
-    // }
-
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(bgImage), fit: BoxFit.cover),
+          image: DecorationImage(
+            image: AssetImage(widget.bgImage),
+            fit: BoxFit.cover,
+          ),
         ),
         child: GestureDetector(
           onTap: () {
@@ -57,80 +86,142 @@ class GuruLevelView extends StatelessWidget {
                     end: Alignment.bottomCenter,
                   ),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      'LEVEL $level',
-                      style: AppStyles.lilitaOne42.copyWith(color: titleColor),
-                    ),
-                    const Divider(),
-                    kGap20,
+                child: Consumer<TeacherProvider>(
+                  builder: (context, prov, _) {
+                    return Column(
+                      children: [
+                        Text(
+                          'LEVEL ${widget.level}',
+                          style: AppStyles.lilitaOne42.copyWith(
+                            color: widget.titleColor,
+                          ),
+                        ),
+                        const Divider(),
+                        kGap20,
 
-                    // Form soal
-                    Expanded(child: TeacherQuestionForm(level: level)),
+                        // Form soal
+                        Expanded(
+                          child: TeacherQuestionForm(
+                            level: widget.level,
+                            provider: prov,
+                            scrollControl: scrlController,
+                          ),
+                        ),
 
-                    kGap20,
+                        kGap20,
 
-                    // Tombol Add (+)
-                    InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap:
-                          // () => teacherProvider.addQuestion(
-                          //   level,
-                          // ), // add soal sesuai level
-                          null,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
+                        // Tombol Add (+)
+                        InkWell(
                           borderRadius: BorderRadius.circular(20),
-                          color: AppColors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8,
-                              color: const Color(0xff000000).withOpacity(0.1),
-                              offset: const Offset(2, 8),
+                          onTap:
+                              prov.state.isFirstTry
+                                  ? null
+                                  : () {
+                                    prov.addQuestion(
+                                      Question(
+                                        id: "${prov.questions.length + 1}",
+                                        question: "Soal..",
+                                        options: [
+                                          "opsi 1",
+                                          "opsi 2",
+                                          "opsi 3",
+                                          "opsi 4",
+                                        ],
+                                        correctAnswer: 0,
+                                      ),
+                                    );
+
+                                    // scroll ui ke paling bawah
+                                    scrlController.animateTo(
+                                      scrlController.position.maxScrollExtent +
+                                          400,
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
+                                      curve: Curves.easeOut,
+                                    );
+                                  },
+
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: AppColors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 8,
+                                  color: const Color(
+                                    0xff000000,
+                                  ).withOpacity(0.1),
+                                  offset: const Offset(2, 8),
+                                ),
+                              ],
+                            ),
+                            child: SvgPicture.asset(
+                              AppIcons.icPlus,
+                              height: 30,
+                              color: AppColors.blue,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Tombol Cancel & Done
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomButton(
+                                onPressed: () {
+                                  prov.cancelEdit();
+                                  Navigator.pop(context);
+                                },
+                                text: 'Cancel',
+                                borderRadius: kRadius20,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: CustomButton(
+                                text: 'Done',
+                                borderRadius: kRadius20,
+                                backgroundColor: AppColors.green,
+                                onPressed:
+                                    prov.state.isLoading
+                                        ? null
+                                        : () async {
+                                          bool isSuccessSave = false;
+                                          switch (widget.level) {
+                                            case 1:
+                                              isSuccessSave = await prov
+                                                  .saveAll(quizId: "quiz_1");
+                                              break;
+                                            case 2:
+                                              isSuccessSave = await prov
+                                                  .saveAll(quizId: "quiz_2");
+                                              break;
+                                            case 3:
+                                              isSuccessSave = await prov
+                                                  .saveAll(quizId: "quiz_3");
+                                              break;
+                                            default:
+                                          }
+
+                                          if (isSuccessSave) {
+                                            Navigator.pop(
+                                              navigatorKey.currentContext ??
+                                                  context,
+                                            );
+                                          }
+                                        },
+                              ),
                             ),
                           ],
                         ),
-                        child: SvgPicture.asset(
-                          AppIcons.icPlus,
-                          height: 30,
-                          color: AppColors.blue,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Tombol Cancel & Done
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomButton(
-                            onPressed: () => Navigator.pop(context),
-                            text: 'Cancel',
-                            borderRadius: kRadius20,
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: CustomButton(
-                            text: 'Done',
-                            borderRadius: kRadius20,
-                            backgroundColor: AppColors.green,
-                            onPressed:
-                                // () => teacherProvider.saveQuestions(
-                                //   level: level,
-                                //   context: context,
-                                //   authProvider: authProvider,
-                                // ),
-                                null,
-                          ),
-                        ),
                       ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),

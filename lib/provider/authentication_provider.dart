@@ -60,8 +60,11 @@ class AuthenticationProvider extends ChangeNotifier {
       // 1️⃣ Siswa (Local session)
       final isStudent = await _service.isStudentLoggedIn();
       if (isStudent) {
+        var studentData = await _service.getDataLoginStudent();
+        _user = studentData;
         _setAuthStatus(AuthStatus.authenticatedStudent);
         _setState(MyState.loaded);
+
         return;
       }
 

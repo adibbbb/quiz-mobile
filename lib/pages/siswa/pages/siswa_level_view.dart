@@ -105,8 +105,17 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                   final currentQuestion =
                       prov.questions[prov.currentQuestionIndex];
 
-                  return Column(
+                  final optionsLabel = ['A', 'B', 'C', 'D'];
+                  return Stack(
                     children: [
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Image.asset(
+                          widget.imgBgLevel.toString(),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
@@ -124,7 +133,7 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                             ...List.generate(currentQuestion.options.length, (
                               index,
                             ) {
-                              final label = ['A', 'B', 'C', 'D'][index];
+                              final label = optionsLabel[index];
 
                               return AnswerOptionWidget(
                                 label: label,
@@ -140,28 +149,55 @@ class _SiswaLevelViewState extends State<SiswaLevelView> {
                               );
                             }),
 
-                            kGap23,
-                            CustomButton(
-                              text:
-                                  prov.isLastIndexQuestion ? "Selesai" : 'Next',
-                              backgroundColor: buttonNextColor,
-                              onPressed: () {
-                                prov.selectedAnswerIndex != null
-                                    ? prov.nextQuestion(
-                                      authProv.user!,
-                                      widget.levelSiswa,
-                                    )
-                                    : null; // disable button kalau belum pilih jawaban
-                              },
-                            ),
+                            kGap26,
+
+                            prov.showCorrectAnswer
+                                ?
+                                // PREVIEW JAWABAN
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Jawaban benar : ${optionsLabel.elementAt(currentQuestion.correctAnswer)}",
+                                    ),
+
+                                    CustomButton(
+                                      height: 50,
+                                      width: 100,
+                                      text:
+                                          prov.isLastIndexQuestion
+                                              ? "Done"
+                                              : 'Next',
+                                      backgroundColor: AppColors.greenLumut,
+                                      onPressed: () {
+                                        prov.selectedAnswerIndex != null
+                                            ? prov.nextQuestion(
+                                              authProv.user!,
+                                              widget.levelSiswa,
+                                            )
+                                            : null; // disable button kalau belum pilih jawaban
+                                      },
+                                    ),
+                                  ],
+                                )
+                                :
+                                // untuk showing jawaban
+                                CustomButton(
+                                  height: 55,
+                                  text:
+                                      prov.isLastIndexQuestion
+                                          ? "Selesai"
+                                          : 'Next',
+                                  backgroundColor: buttonNextColor,
+                                  onPressed: () {
+                                    prov.selectedAnswerIndex != null
+                                        ? prov.showAnswer()
+                                        : null; // disable button kalau belum pilih jawaban
+                                  },
+                                ),
                           ],
                         ),
-                      ),
-                      Spacer(),
-                      Image.asset(
-                        widget.imgBgLevel.toString(),
-                        width: double.infinity,
-                        fit: BoxFit.cover,
                       ),
                     ],
                   );

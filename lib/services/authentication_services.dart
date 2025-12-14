@@ -21,6 +21,17 @@ class AuthenticationServices {
     return prefs.containsKey('student_uid');
   }
 
+  Future<AppUser> getDataLoginStudent() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return AppUser(
+      id: prefs.getString('student_uid') ?? "",
+      name: prefs.getString('student_name') ?? "",
+      className: prefs.getString("student_class") ?? "",
+      role: "student",
+    );
+  }
+
   // ==========================================================
   // 👨‍🏫 LOGIN GURU
   // ==========================================================

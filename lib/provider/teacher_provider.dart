@@ -1,110 +1,117 @@
-import 'package:flutter/material.dart';
+import 'package:quiz/app/extensions.dart';
+import 'package:quiz/app/navigator_keys.dart';
+import 'package:quiz/services/quizz_services.dart';
 
 import '../app/finite_state.dart';
-import '../app/result.dart';
+import '../commons.dart';
 import '../models/question.dart';
-import '../models/quiz.dart';
-import '../services/teacher_services.dart';
 
 class TeacherProvider extends ChangeNotifier {
-  final TeacherService _service;
+  final QuizService _service;
 
   TeacherProvider(this._service);
 
   MyState state = MyState.initial;
   String? error;
 
-  Future<void> saveQuiz(Quiz quiz) async {
-    state = state.loading;
+  // ===== QUESTION EDITOR =====
+  List<Question> questions = [];
+  final List<String> _deletedQuestionIds = [];
+
+  // ===============================
+  // FETCH QUESTIONS PER QUIZ
+  // ===============================
+  Future<void> fetchQuestions(String quizId) async {
+    state = MyState.loading;
     error = null;
     notifyListeners();
-
-    final result = await _service.saveQuiz(quiz);
-
-    switch (result) {
-      case Success():
-        state = state.loaded;
-        break;
-      case Failure(:final message):
-        state = state.failed;
+    final result = await _service.fetchQuestions(quizId);
+    result.when(
+      success: (data) {
+        questions = data;
+        _deletedQuestionIds.clear();
+        state = MyState.loaded;
+      },
+      failure: (message) {
+        state = MyState.failed;
         error = message;
-    }
+      },
+    );
 
     notifyListeners();
   }
 
-  Future<void> addQuestion({
-    required String quizId,
-    required Question question,
-  }) async {
-    state = state.loading;
-    error = null;
-    notifyListeners();
-
-    final result = await _service.addQuestion(
-      quizId: quizId,
-      question: question,
-    );
-
-    switch (result) {
-      case Success():
-        state = state.loaded;
-        break;
-      case Failure(:final message):
-        state = state.failed;
-        error = message;
-    }
-
+  // ===============================
+  // LOCAL QUESTION ACTIONS
+  // ===============================
+  void addQuestion(Question question) {
+    questions.add(question);
     notifyListeners();
   }
 
-  Future<void> updateQuestion({
-    required String quizId,
-    required Question question,
-  }) async {
-    state = state.loading;
-    error = null;
-    notifyListeners();
+  void updateQuestion(Question question) {
+    final index = questions.indexWhere((q) => q.id == question.id);
+    if (index != -1) {
+      questions[index] = question;
+      notifyListeners();
+    }
+  }
 
-    final result = await _service.updateQuestion(
-      quizId: quizId,
-      question: question,
-    );
+  void deleteQuestion(String questionId) {
+    final index = questions.indexWhere((q) => q.id == questionId);
+    if (index == -1) return;
 
-    switch (result) {
-      case Success():
-        state = state.loaded;
-        break;
-      case Failure(:final message):
-        state = state.failed;
-        error = message;
+    if ((questions[index].id ?? "").isNotEmpty) {
+      _deletedQuestionIds.add(questionId);
     }
 
+    questions.removeAt(index);
     notifyListeners();
   }
 
-  Future<void> deleteQuestion({
-    required String quizId,
-    required String questionId,
-  }) async {
-    state = state.loading;
+  // ===============================
+  // SAVE ALL CHANGES
+  // ===============================
+  Future<bool> saveAll({required String quizId}) async {
+    state = MyState.loading;
     error = null;
     notifyListeners();
 
-    final result = await _service.deleteQuestion(
+    final result = await _service.syncQuestions(
       quizId: quizId,
-      questionId: questionId,
+      questions: questions,
+      deletedQuestionIds: _deletedQuestionIds,
     );
 
-    switch (result) {
-      case Success():
-        state = state.loaded;
-        break;
-      case Failure(:final message):
-        state = state.failed;
+    bool isSaved = false;
+
+    result.when(
+      success: (data) {
+        isSaved = true;
+        _deletedQuestionIds.clear();
+        state = MyState.loaded;
+        navigatorKey.currentContext?.showSuccessSnackBar(
+          "Berhasil menyimpan perubahan!",
+        );
+      },
+      failure: (message) {
+        isSaved = false;
+        state = MyState.loaded;
+
         error = message;
-    }
+        navigatorKey.currentContext?.showErrorSnackBar(
+          "Gagal menyimpan perubahan!",
+        );
+      },
+    );
 
     notifyListeners();
+    return isSaved;
+  }
+
+  void cancelEdit() {
+    _deletedQuestionIds.clear();
+    state = MyState.initial;
+    error = null;
   }
 }

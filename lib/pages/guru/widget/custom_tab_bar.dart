@@ -1,6 +1,7 @@
 import '../../../commons.dart';
 
 class CustomTabBar extends StatefulWidget {
+  final int initialTab;
   final List<String> tabs;
   final List<Widget> children;
   final double borderRadius;
@@ -14,6 +15,7 @@ class CustomTabBar extends StatefulWidget {
     required this.children,
     this.borderRadius = 42,
     this.onTabChange,
+    this.initialTab = 0,
   });
 
   @override
@@ -21,7 +23,14 @@ class CustomTabBar extends StatefulWidget {
 }
 
 class _CustomTabBarState extends State<CustomTabBar> {
-  int selectedIndex = 0;
+  late int selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedIndex = widget.initialTab;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,6 @@ import 'provider/quiz_provider.dart';
 import 'provider/teacher_provider.dart';
 import 'services/authentication_services.dart';
 import 'services/quizz_services.dart';
-import 'services/teacher_services.dart';
 
 class MyApp extends StatelessWidget {
   final bool hasSeenOnboarding;
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         //
         ChangeNotifierProvider(
-          create: (_) => TeacherProvider(TeacherService(db: firestore)),
+          create: (_) => TeacherProvider(QuizService(db: firestore)),
         ),
         ChangeNotifierProvider(
           create: (_) => LeaderboardProvider(QuizService(db: firestore)),

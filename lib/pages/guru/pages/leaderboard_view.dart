@@ -8,7 +8,9 @@ import '../../../commons.dart';
 import '../widget/custom_tab_bar.dart';
 
 class LeaderboardView extends StatefulWidget {
-  const LeaderboardView({super.key});
+  final int level;
+
+  const LeaderboardView({super.key, required this.level});
 
   @override
   State<LeaderboardView> createState() => _LeaderboardViewState();
@@ -21,7 +23,21 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var prov = context.read<LeaderboardProvider>();
-      prov.fetchLeaderboard("quiz_1");
+
+      switch (widget.level) {
+        case 1:
+          prov.fetchLeaderboard("quiz_1");
+
+          break;
+        case 2:
+          prov.fetchLeaderboard("quiz_2");
+
+          break;
+        case 3:
+          prov.fetchLeaderboard("quiz_3");
+
+          break;
+      }
     });
   }
 
@@ -53,6 +69,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                   child: Consumer<LeaderboardProvider>(
                     builder: (context, prov, _) {
                       return CustomTabBar(
+                        initialTab: widget.level - 1,
                         onTabChange: (index) {
                           var prov = context.read<LeaderboardProvider>();
 

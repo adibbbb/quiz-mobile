@@ -126,7 +126,11 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                                 text: 'NEXT',
                                 backgroundColor: AppColors.orange,
                                 onPressed: () {
-                                  context.fadeTo(LeaderboardView());
+                                  context.fadeTo(
+                                    LeaderboardView(
+                                      level: widget.result.level ?? 1,
+                                    ),
+                                  );
                                 },
                               ),
                             ),

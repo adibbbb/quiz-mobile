@@ -93,14 +93,16 @@ class QuizProvider extends ChangeNotifier {
   // ==============================
   // Next question
   // ==============================
+  void showAnswer() {
+    showCorrectAnswer = true;
+    notifyListeners();
+  }
+
   void nextQuestion(AppUser user, int quizLevel) {
     if (selectedAnswerIndex == null) return;
 
-    showCorrectAnswer = true;
-    notifyListeners();
-
     // delay biar user bisa lihat jawaban benar
-    Future.delayed(const Duration(milliseconds: 1500), () async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
       selectedAnswers.add(selectedAnswerIndex!);
 
       if (currentQuestionIndex < questions.length - 1) {

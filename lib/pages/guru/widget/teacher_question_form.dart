@@ -1,9 +1,20 @@
+import 'package:quiz/app/finite_state.dart';
+import 'package:quiz/provider/teacher_provider.dart';
+
 import '../../../commons.dart';
+import 'card_question_editable.dart';
 
 class TeacherQuestionForm extends StatefulWidget {
   final int level;
+  final TeacherProvider provider;
+  final ScrollController scrollControl;
 
-  const TeacherQuestionForm({super.key, required this.level});
+  const TeacherQuestionForm({
+    super.key,
+    required this.level,
+    required this.provider,
+    required this.scrollControl,
+  });
 
   @override
   State<TeacherQuestionForm> createState() => _TeacherQuestionFormState();
@@ -14,128 +25,43 @@ class _TeacherQuestionFormState extends State<TeacherQuestionForm> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = widget.provider;
+    var state = provider.state;
+
+    if (state.isFirstTry) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.isFailed) {
+      return Center(child: Text(provider.error ?? "Gagal ambil data"));
+    }
+
+    if (provider.questions.isEmpty) {
+      return const Center(
+        child: Text("Belum ada soal, silahkan tambahkan terlebih dahulu!"),
+      );
+    }
+
     return ListView.builder(
-      itemCount: 3,
+      controller: widget.scrollControl,
+      itemCount: provider.questions.length,
       itemBuilder: (context, index) {
+        final question = provider.questions[index];
+
         return TeacherQuestionCard(
-          selectedAnswer: selectedAnswers[index],
-          onQuestionChanged: (text) {
-            // simpan soal kalau mau
+          question: question,
+
+          /// UPDATE LOCAL
+          onChanged: (updated) {
+            provider.updateQuestion(updated);
           },
-          onSelectAnswer: (answerIndex) {
-            setState(() {
-              selectedAnswers[index] = answerIndex;
-            });
+
+          /// DELETE LOCAL
+          onDelete: () {
+            provider.deleteQuestion(question.id ?? "");
           },
-          onAnswerChanged: (index, text) {
-            // simpan opsi jawaban
-          },
-          onDelete: () {},
         );
       },
-    );
-  }
-}
-
-class TeacherQuestionCard extends StatelessWidget {
-  // final QuestionData questionData;
-  final VoidCallback onDelete;
-  final ValueChanged<String> onQuestionChanged;
-  final void Function(int, String) onAnswerChanged;
-  final ValueChanged<int> onSelectAnswer;
-  final int selectedAnswer;
-
-  const TeacherQuestionCard({
-    super.key,
-    // required this.questionData,
-    required this.onDelete,
-    required this.onQuestionChanged,
-    required this.onAnswerChanged,
-    required this.onSelectAnswer,
-    required this.selectedAnswer,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8,
-            // ignore: deprecated_member_use
-            color: Colors.black.withOpacity(0.1),
-            offset: const Offset(2, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // TextField Soal
-          TextField(
-            onChanged: onQuestionChanged,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Tulis soal di sini...',
-            ),
-            maxLines: null,
-          ),
-          const Divider(),
-
-          Column(
-            children: List.generate(4, (i) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    // jawaban radio
-                    Radio<int>(
-                      value: i,
-                      groupValue: selectedAnswer,
-                      activeColor: Colors.red,
-                      onChanged: (value) => onSelectAnswer(i),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        onChanged: (text) => onAnswerChanged(i, text),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Opsi ${i + 1}',
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-          const Divider(),
-          SizedBox(height: 8),
-
-          // Hapus
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: onDelete,
-                child: const Icon(
-                  Icons.delete_outline_rounded,
-                  color: Colors.redAccent,
-                  size: 28,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

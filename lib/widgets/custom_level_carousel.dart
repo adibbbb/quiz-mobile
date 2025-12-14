@@ -178,7 +178,9 @@ class _CustomLevelCarouselState extends State<CustomLevelCarousel> {
                                   () {
                                     Navigator.push(
                                       context,
-                                      SlidePageRoute(page: LeaderboardView()),
+                                      SlidePageRoute(
+                                        page: LeaderboardView(level: 1),
+                                      ),
                                     );
                                   },
                             ),
