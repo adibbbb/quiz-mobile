@@ -61,27 +61,33 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                 ),
 
                 /// CONTENT
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 50, 30, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        item.title,
-                        style: AppStyles.lilitaOne48.copyWith(
-                          color: item.textColor,
-                          fontSize: 45,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final bool isTablet = constraints.maxWidth >= 600;
+                    final double sizeImageAsset = isTablet ? 0.7 : 0.45;
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(30, 50, 30, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            item.title,
+                            style: AppStyles.lilitaOne48.copyWith(
+                              color: item.textColor,
+                              fontSize: 45,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
 
-                      Image.asset(
-                        item.image,
-                        height: MediaQuery.of(context).size.height * 0.7,
+                          Image.asset(
+                            item.image,
+                            height: MediaQuery.of(context).size.height * sizeImageAsset,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
 
                 /// DOT INDICATOR

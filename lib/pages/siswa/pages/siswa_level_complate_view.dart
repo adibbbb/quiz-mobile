@@ -73,14 +73,14 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                   final EdgeInsetsGeometry padding =
                       isTablet
                           ? EdgeInsets.fromLTRB(50, 100, 50, 50)
-                          : EdgeInsets.all(50);
+                          : EdgeInsets.all(30);
                   return Padding(
                     padding: padding,
                     child: Column(
                       children: [
                         Image.asset(
                           AppImages.imgLevelComplate,
-                          height: isTablet ? 150 : 140,
+                          height: isTablet ? 150 : 100,
                         ),
                         kGap60,
                         AnimatedOpacity(
@@ -91,7 +91,7 @@ class _SiswaLevelComplateViewState extends State<SiswaLevelComplateView> {
                             (widget.result.score ?? 0) < 70
                                 ? AppImages.imgBintang3
                                 : AppImages.imgBintang5,
-                            height: isTablet ? 130 : 120,
+                            height: isTablet ? 130 : 100,
                           ),
                         ),
                         kGap50,
