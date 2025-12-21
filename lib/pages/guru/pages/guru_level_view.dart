@@ -3,6 +3,7 @@ import 'package:quiz/app/finite_state.dart';
 import 'package:quiz/app/navigator_keys.dart';
 import 'package:quiz/models/question.dart';
 import 'package:quiz/provider/teacher_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../app/extensions.dart';
 import '../../../commons.dart';
@@ -117,9 +118,11 @@ class _GuruLevelViewState extends State<GuruLevelView> {
                               prov.state.isFirstTry
                                   ? null
                                   : () {
+                                    final uuid = const Uuid();
+
                                     prov.addQuestion(
                                       Question(
-                                        id: "${prov.questions.length + 1}",
+                                        id: uuid.v4(),
                                         question: "Soal..",
                                         options: [
                                           "opsi 1",
