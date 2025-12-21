@@ -119,7 +119,6 @@ class _GuruLevelViewState extends State<GuruLevelView> {
                                   ? null
                                   : () {
                                     final uuid = const Uuid();
-
                                     prov.addQuestion(
                                       Question(
                                         id: uuid.v4(),
