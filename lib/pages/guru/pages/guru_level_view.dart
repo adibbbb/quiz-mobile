@@ -166,7 +166,7 @@ class _GuruLevelViewState extends State<GuruLevelView> {
                           ),
                         ),
 
-                        const SizedBox(height: 20),
+                        kGap20,
 
                         // Tombol Cancel & Done
                         Row(
@@ -181,7 +181,7 @@ class _GuruLevelViewState extends State<GuruLevelView> {
                                 borderRadius: kRadius20,
                               ),
                             ),
-                            const SizedBox(width: 20),
+                            kGap20,
                             Expanded(
                               child: CustomButton(
                                 text: 'Done',
